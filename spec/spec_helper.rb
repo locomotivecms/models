@@ -3,6 +3,11 @@ require 'bundler/setup'
 
 require 'common'
 
+begin
+  require 'pry'
+rescue LoadError
+end
+
 require_relative '../lib/locomotive_models'
 
 RSpec.configure do |config|
