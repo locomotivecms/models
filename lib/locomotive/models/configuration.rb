@@ -1,5 +1,5 @@
 module Locomotive
-  module Common
+  module Models
 
     class Configuration
       attr_accessor :default_adapter
