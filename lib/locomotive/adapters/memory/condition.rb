@@ -10,12 +10,9 @@ module Locomotive
 
         def initialize(name, value)
           self.name, self.right_operand = name, value
-
           self.process_right_operand
-
           # default value
           self.operator = :==
-
           self.decode_operator_based_on_name
         end
 
@@ -67,7 +64,7 @@ module Locomotive
           elsif self.right_operand.respond_to?(:map) && self.right_operand.first.respond_to?(:_slug)
             # many_to_many
             self.right_operand = self.right_operand.map do |entry|
-              entry.try(&:_slug)
+              entry.send(:_slug) if entry
             end
           end
         end
