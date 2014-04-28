@@ -7,11 +7,16 @@ module Locomotive
         include Enumerable
         extend  Forwardable
 
-        def_delegators :all, :each, :to_s, :empty?
+        def_delegators :all, :each, :to_s, :to_a, :empty?, :size
+        alias :length :size
+        alias :count :size
 
         def initialize(dataset, &block)
           @dataset    = dataset
           @conditions = []
+          @sorting = nil
+          @limit = nil
+          @offset = 0
           instance_eval(&block) if block_given?
         end
 
@@ -20,10 +25,58 @@ module Locomotive
           self
         end
 
-        def all
-          result = @dataset.all.dup
+        def order_by(order_string)
+          @sorting = order_string.downcase.split.map(&:to_sym) unless order_string.empty?
+          self
+        end
 
-          result.find_all do |entry|
+        def limit(num)
+          @limit = num
+          self
+        end
+
+        def offset(num)
+          @offset = num
+          self
+        end
+
+        def ==(other)
+          if other.kind_of? Array
+            all == other
+          else
+            super
+          end
+        end
+
+        def all
+          limited sorted(filtered)
+        end
+
+        def sorted(entries)
+          return entries if @sorting.nil?
+
+          name, direction  = @sorting.first, (@sorting.last || :asc)
+          if direction == :asc
+            entries.sort { |a, b| a.send(name) <=> b.send(name) }
+          else
+            entries.sort { |a, b| b.send(name) <=> a.send(name) }
+          end
+        end
+
+        def limited(entries)
+          return [] if @limit == 0
+          return entries if @offset == 0 && @limit.nil?
+
+          subentries = entries.drop(@offset || 0)
+          if @limit.kind_of? Integer
+            subentries.take(@limit)
+          else
+            subentries
+          end
+        end
+
+        def filtered
+          @dataset.all.dup.find_all do |entry|
             accepted = true
 
             @conditions.each do |_condition|
@@ -32,9 +85,9 @@ module Locomotive
                 break # no to go further
               end
             end
-
             accepted
           end
+
         end
 
       end
