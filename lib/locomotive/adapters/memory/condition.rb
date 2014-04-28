@@ -53,7 +53,7 @@ module Locomotive
         protected
 
         def get_value(entry)
-          value = entry.send(self.name)
+          value = entry.fetch(self.name.to_s)
 
           if value.respond_to?(:_slug)
             # belongs_to

@@ -1,20 +1,19 @@
 require 'spec_helper'
 
-describe Locomotive::Datastore do
+describe Locomotive::MountingPoint do
 
   let(:path)      { File.expand_path('../../fixtures/default', __FILE__) }
   let(:loader)    { Locomotive::Adapters::Memory::YamlLoader.new(path) }
   let(:adapter)   { Locomotive::Adapters::MemoryAdapter.new(loader) }
   let(:datastore) { Locomotive::Datastore.new(adapter: adapter) }
 
-  describe 'mounting point' do
+  subject do
+    Locomotive::MountingPoint.new(datastore, 'sample.example.com')
+  end
 
-    subject { datastore.build_mounting_point('sample.example.com') }
-
-    it 'gets a site', pending: true do
-      subject.site.name.should eq 'Sample website'
-    end
-
+  context '' do
+    specify { expect(subject.site).to_not be_nil }
+    specify { expect(subject.site['name']).to eq('Sample website') }
   end
 
 end
