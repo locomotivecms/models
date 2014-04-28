@@ -4,7 +4,7 @@ module Locomotive
 
       class Condition
 
-        OPERATORS = %w(all gt gte in lt lte ne nin size)
+        OPERATORS = %w(all gt gte in lt lte ne nin size).freeze
 
         attr_accessor :name, :operator, :right_operand
 
@@ -47,7 +47,7 @@ module Locomotive
         protected
 
         def get_value(entry)
-          value = entry.send(self.name)
+          value = entry.fetch(self.name.to_s)
 
           if value.respond_to?(:_slug)
             # belongs_to
@@ -73,9 +73,9 @@ module Locomotive
         end
 
         def decode_operator_based_on_name
-          if name =~ /^([a-z0-9_-]+)\.(#{OPERATORS.join('|')})$/
-            self.name     = $1.to_sym
-            self.operator = $2.to_sym
+          if match = name.match(/^(?<name>[a-z0-9_-]+)\.(?<operator>#{OPERATORS.join('|')})$/)
+            self.name     = match[:name].to_sym
+            self.operator = match[:operator].to_sym
           end
 
           if self.right_operand.is_a?(Regexp)

@@ -25,7 +25,7 @@ module Locomotive
     end
 
     def default_adapter
-      @default_adapter ||= Adapters::MemoryAdapter.new
+      @default_adapter ||= Locomotive::Models.configuration.default_adapter
     end
 
   end
