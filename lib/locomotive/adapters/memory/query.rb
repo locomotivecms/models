@@ -15,6 +15,8 @@ module Locomotive
           @dataset    = dataset
           @conditions = []
           @sorting = nil
+          @limit = nil
+          @offset = 0
           instance_eval(&block) if block_given?
         end
 
@@ -28,6 +30,16 @@ module Locomotive
           self
         end
 
+        def limit(num)
+          @limit = num
+          self
+        end
+
+        def offset(num)
+          @offset = num
+          self
+        end
+
         def ==(other)
           if other.kind_of? Array
             all == other
@@ -37,7 +49,7 @@ module Locomotive
         end
 
         def all
-          sorted(filtered)
+          limited sorted(filtered)
         end
 
         def sorted(entries)
@@ -48,6 +60,18 @@ module Locomotive
             entries.sort { |a, b| a.send(name) <=> b.send(name) }
           else
             entries.sort { |a, b| b.send(name) <=> a.send(name) }
+          end
+        end
+
+        def limited(entries)
+          return [] if @limit == 0
+          return entries if @offset == 0 && @limit.nil?
+
+          subentries = entries.drop(@offset || 0)
+          if @limit.kind_of? Integer
+            subentries.take(@limit)
+          else
+            subentries
           end
         end
 

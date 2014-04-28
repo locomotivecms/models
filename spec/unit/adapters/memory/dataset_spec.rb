@@ -24,7 +24,7 @@ describe Locomotive::Adapters::Memory::Dataset do
   }
 
   let(:base_items) { [john, jane, alex] }
-  let(:loader) { mock(to_a: base_items) }
+  let(:loader) { base_items }
 
   subject { Locomotive::Adapters::Memory::Dataset.new(loader) }
 
@@ -78,6 +78,30 @@ describe Locomotive::Adapters::Memory::Dataset do
       end
     end
 
+    context '#limit' do
+      it 'returns empty if 0 specified as param' do
+        subject.limit(0).size.should eq 0
+      end
+
+      it 'returns the number of items specified as param' do
+        subject.limit(2).size.should eq 2
+      end
+
+      it 'returns at most the existing items' do
+        subject.limit(10).size.should eq 3
+      end
+
+    end
+
+    context '#offset' do
+      it 'returns the nth records' do
+        subject.order_by('age ASC').offset(1).should eq [john, alex]
+      end
+      it 'with limit it returns a slice' do
+        subject.order_by('age ASC').limit(1).offset(1).should eq [john]
+        subject.order_by('age ASC').limit(1).offset(2).should eq [alex]
+      end
+    end
     context 'chaining' do
       it 'multiple wheres' do
         subject.where('lastname' => 'Doe').where('firstname' => 'John').should eq [john]
@@ -87,6 +111,11 @@ describe Locomotive::Adapters::Memory::Dataset do
         subject.where('lastname' => 'Doe').order_by('firstname ASC').first.should eq jane
         subject.where('lastname' => 'Doe').order_by('firstname DESC').first.should eq john
       end
+
+      it 'where and limit' do
+        subject.limit(1).where('lastname' => 'Doe').order_by('firstname ASC').should eq [jane]
+      end
+
     end
 
   end
