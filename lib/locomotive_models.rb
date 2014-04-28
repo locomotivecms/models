@@ -1,0 +1,5 @@
+require_relative 'locomotive/datastore'
+require_relative 'locomotive/mounting_point'
+require_relative 'locomotive/repository'
+require_relative 'locomotive/repositories/site_repository'
+require_relative 'locomotive/adapters/memory_adapter'
