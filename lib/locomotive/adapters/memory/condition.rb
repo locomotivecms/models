@@ -25,22 +25,16 @@ module Locomotive
           self.decode_operator_based_on_value(value)
 
           case self.operator
-          when :==      then value == self.right_operand
-          when :ne      then value != self.right_operand
-          when :matches then self.right_operand =~ value
-          when :gt      then value > self.right_operand
-          when :gte     then value >= self.right_operand
-          when :lt      then value < self.right_operand
-          when :lte     then value <= self.right_operand
-          when :size    then value.size == self.right_operand
-          when :all     then array_contains?([*self.right_operand], value)
-          when :in, :nin
-            _matches = if value.is_a?(Array)
-              array_contains?([*value], [*self.right_operand])
-            else
-              [*self.right_operand].include?(value)
-            end
-            self.operator == :in ? _matches : !_matches
+          when :==        then value == self.right_operand
+          when :ne        then value != self.right_operand
+          when :matches   then self.right_operand =~ value
+          when :gt        then value > self.right_operand
+          when :gte       then value >= self.right_operand
+          when :lt        then value < self.right_operand
+          when :lte       then value <= self.right_operand
+          when :size      then value.size == self.right_operand
+          when :all       then array_contains?([*self.right_operand], value)
+          when :in, :nin  then value_in_right_operand?(value)
           else
             raise UnknownConditionInScope.new("#{self.operator} is unknown or not implemented.")
           end
@@ -94,6 +88,15 @@ module Locomotive
           when Array
             self.operator = :in if self.operator == :==
           end
+        end
+
+        def value_in_right_operand?(value)
+          _matches = if value.is_a?(Array)
+            array_contains?([*value], [*self.right_operand])
+          else
+            [*self.right_operand].include?(value)
+          end
+          self.operator == :in ? _matches : !_matches
         end
 
         def array_contains?(source, target)
