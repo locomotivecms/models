@@ -8,6 +8,7 @@ module Locomotive
         extend  Forwardable
 
         def_delegators :all, :each, :to_s, :empty?, :size
+        def_delegators :query, :where, :order_by
 
         def initialize(loader)
           @loader = loader
@@ -19,6 +20,10 @@ module Locomotive
 
         def all
           dataset
+        end
+
+        def query
+          Query.new(self)
         end
 
         private
