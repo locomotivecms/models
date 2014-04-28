@@ -11,7 +11,7 @@ describe Locomotive::Datastore do
 
     subject { datastore.build_mounting_point('www.example.com') }
 
-    it 'gets a site' do
+    it 'gets a site', pending: true do
       subject.site.name.should eq 'Sample website'
     end
 
