@@ -13,7 +13,7 @@ describe Locomotive::MountingPoint do
 
   context '' do
     specify { expect(subject.site).to_not be_nil }
-    specify { expect(subject.site['name']).to eq('Sample website') }
+    specify { expect(subject.site.name).to eq('Sample website') }
   end
 
 end
