@@ -18,11 +18,8 @@ GEM
     i18n (0.6.9)
     json (1.8.1)
     locomotivecms_common (0.0.1)
-    metaclass (0.0.4)
     method_source (0.8.2)
     minitest (5.3.3)
-    mocha (1.0.0)
-      metaclass (~> 0.0.1)
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -47,7 +44,6 @@ PLATFORMS
 DEPENDENCIES
   locomotivecms_common (~> 0.0.1)
   locomotivecms_models!
-  mocha (~> 1.0.0)
   pry
   rake (~> 10.3.1)
   rspec (~> 2.14.1)
