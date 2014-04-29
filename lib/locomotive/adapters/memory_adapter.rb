@@ -15,9 +15,9 @@ module Locomotive
       end
 
       def all(collection)
-        dataset(collection).all
+        Locomotive::Mapping::Collection.new(collection).deserialize(dataset(collection).all)
       end
-      
+
       def first(collection)
         dataset(collection).first
       end

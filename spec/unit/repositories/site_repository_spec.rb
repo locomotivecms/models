@@ -19,8 +19,8 @@ describe Locomotive::Repositories::SiteRepository do
     end
 
     context 'with sites' do
-      let(:site)         { OpenStruct.new(name: 'Acme', domains: ['www.acme.org']) }
-      let(:another_site) { OpenStruct.new(name: 'Acme', domains: ['www.acme.com']) }
+      let(:site)         { OpenStruct.new(name: 'Acme 1', domains: ['www.acme.org']) }
+      let(:another_site) { OpenStruct.new(name: 'Acme 2', domains: ['www.acme.com']) }
       let(:sites)        { Locomotive::Adapters::Memory::Dataset.new([site, another_site]) }
 
       before do
@@ -31,9 +31,10 @@ describe Locomotive::Repositories::SiteRepository do
         subject.should eq site
       end
 
-      describe '#load' do
+      describe '#all' do
+        specify do expect(repository.all.size).to eq(2) end
         specify do
-          expect(repository.load.size).to eq(2)
+          expect(repository.all.map(&:name)).to eq(['Acme 1', 'Acme 2'])
         end
       end
     end
