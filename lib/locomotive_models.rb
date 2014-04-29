@@ -1,10 +1,11 @@
 require_relative 'locomotive/datastore'
 require_relative 'locomotive/mounting_point'
 require_relative 'locomotive/repository'
-require_relative 'locomotive/repositories/site_repository'
 require_relative 'locomotive/adapters/memory_adapter'
+Dir[File.dirname(__FILE__) + '/locomotive/repositories/*.rb'].each {|file| require file }
 
 require_relative 'locomotive/models/configuration'
+
 
 module Locomotive
   module Models
