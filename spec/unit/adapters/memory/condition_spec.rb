@@ -6,6 +6,22 @@ describe Locomotive::Adapters::Memory::Condition do
 
   subject { Locomotive::Adapters::Memory::Condition.new(name, value) }
 
+  describe '#get_value' do
+    before do subject.stub(name: :sites) end
+    context '' do
+      let(:entry) {{ sites: { title: 'Awesome Site' }}}
+      specify do expect(subject.send(:get_value, entry)).to eq([['title', 'Awesome Site']]) end
+    end
+    context '' do
+      let(:entry) {{ sites: { _slug: 42, title: 'Awesome Site' } }}
+      specify do expect(subject.send(:get_value, entry)).to eq(42) end
+    end
+    context '' do
+      let(:entry) {{ sites: [{ _slug: 42, title: 'Awesome Site' }] }}
+      specify do expect(subject.send(:get_value, entry)).to eq([42]) end
+    end
+  end
+
   describe '#process_right_operand' do
     before { subject.send(:process_right_operand) }
 
@@ -59,13 +75,37 @@ describe Locomotive::Adapters::Memory::Condition do
     end
   end
 
-  describe '#array_contains?', pending: true do
-    let(:source) { [1, 2, 3] }
-    let(:target) { [3, 2, 1] }
+  describe '#array_contains?' do
+    let(:source) { [1, 2, 3, 4] }
+    let(:target) { [1, 2, 3] }
     context '' do
       specify do
         expect(subject.send(:array_contains?, source, target)).to be_true
       end
     end
+  end
+
+  describe '#value_in_right_operand?' do
+    let(:value) { [1, 2, 3, 4] }
+    let(:right_operand) { [1, 2, 3] }
+
+    before do
+      subject.stub(operator: operator, right_operand: right_operand)
+    end
+
+    context '' do
+      let(:operator) { :in }
+      specify do
+        expect(subject.send(:value_in_right_operand?, value)).to be_true
+      end
+    end
+
+    context '' do
+      let(:operator) { :nin }
+      specify do
+        expect(subject.send(:value_in_right_operand?, value)).to be_false
+      end
+    end
+
   end
 end
