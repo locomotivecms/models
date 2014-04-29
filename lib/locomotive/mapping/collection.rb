@@ -8,9 +8,9 @@ module Locomotive
         self.collection = collection
       end
 
-      # def serialize(entity)
-      #   entity.to_record
-      # end
+      def serialize(entity)
+        entity.to_record
+      end
 
       def deserialize(records)
         [].tap do |data|

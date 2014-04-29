@@ -18,6 +18,10 @@ module Locomotive
         Locomotive::Mapping::Collection.new(collection).deserialize(dataset(collection).all)
       end
 
+      def create(collection, entity)
+        dataset(collection).all << entity.to_record
+      end
+
       def first(collection)
         dataset(collection).first
       end

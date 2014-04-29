@@ -1,6 +1,8 @@
+require_relative '../entity'
+
 module Locomotive
   module Entities
-    class ContentType < Hash
+    class ContentType < Entity
 
       class << self
         def attributes
