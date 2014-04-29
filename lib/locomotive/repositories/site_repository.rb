@@ -9,6 +9,13 @@ module Locomotive
         end.first
       end
 
+      def load
+        [].tap do |data|
+          all.each do |site|
+            data << Locomotive::Entities::Site.new(site)
+          end
+        end
+      end
     end
 
   end

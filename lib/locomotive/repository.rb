@@ -7,6 +7,10 @@ module Locomotive
       @adapter    = adapter
     end
 
+    def all
+      @adapter.all(collection)
+    end
+
     def find(slug)
       @adapter.find(collection, slug)
     end

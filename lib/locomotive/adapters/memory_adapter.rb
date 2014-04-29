@@ -14,6 +14,10 @@ module Locomotive
         @datasets = Hash.new { |hash, name| hash[name] = Memory::Dataset.new(@loader.get(name)) }
       end
 
+      def all(collection)
+        dataset(collection).all
+      end
+      
       def first(collection)
         dataset(collection).first
       end
