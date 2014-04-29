@@ -21,7 +21,7 @@ module Locomotive
 
     def collection
       # TODO: mapper will go here
-      self.class.name.split("::").last.sub(/Repository$/, '').downcase.to_sym
+      self.class.name.split("::").last.sub(/Repository$/, '').scan(/[A-Z][a-z]*/).join("_").downcase.to_sym
     end
 
   end

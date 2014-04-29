@@ -23,7 +23,9 @@ module Locomotive
       private
 
       def constantize name
-        name[0].upcase +  name[1..name.length]
+        { site: 'Site',
+          content_type: 'ContentType'
+        }[name]
       end
 
     end
