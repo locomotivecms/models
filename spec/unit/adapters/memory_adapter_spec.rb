@@ -22,10 +22,10 @@ describe Locomotive::Adapters::MemoryAdapter do
       subject.size(:site).should eq 1
     end
 
-    context '' do
+    describe '#create' do
       let(:entity) { Locomotive::Entities::Site.new({ name: 'my awesome site'}) }
-      before do adapter.create :site, entity end
-      specify do expect(adapter.size(:site)).to eq(2) end
+      before  { adapter.create :site, entity }
+      specify { expect(adapter.size(:site)).to eq(2) }
       specify do
         expect(adapter.all(:site).map(&:name)).to eq(['Acme', 'my awesome site'])
       end

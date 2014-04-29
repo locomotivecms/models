@@ -6,7 +6,7 @@ describe Locomotive::Repositories::SiteRepository do
   let(:adapter)    { Locomotive::Adapters::MemoryAdapter.new }
   let(:repository) { Locomotive::Repositories::SiteRepository.new(datastore, adapter) }
 
-  describe '.find_by_host' do
+  describe '#find_by_host' do
     let(:host) { 'www.acme.org' }
 
     subject { repository.find_by_host(host) }
@@ -40,4 +40,12 @@ describe Locomotive::Repositories::SiteRepository do
     end
   end
 
+  describe '#create' do
+    let(:new_site) { OpenStruct.new(name: 'Acme', domains: ['www.acme.net']) }
+
+    it 'tells the adapter to create the record' do
+      expect(adapter).to receive(:create).with(:site, new_site)
+      repository.create(new_site)
+    end
+  end
 end
