@@ -23,7 +23,7 @@ describe Locomotive::Repositories::SiteRepository do
 
     end
 
-    context 'with sites', pending: true do
+    context 'with sites' do
 
       let(:site) { OpenStruct.new(name: 'Acme', domains: ['www.acme.org']) }
       let(:another_site) { OpenStruct.new(name: 'Acme', domains: ['www.acme.com']) }
