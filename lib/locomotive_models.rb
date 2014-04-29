@@ -1,3 +1,4 @@
+require_relative 'locomotive/core_ext'
 require_relative 'locomotive/datastore'
 require_relative 'locomotive/mounting_point'
 require_relative 'locomotive/repository'
