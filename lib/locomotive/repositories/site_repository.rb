@@ -1,7 +1,8 @@
 module Locomotive
   module Repositories
 
-    class SiteRepository < Repository
+    class SiteRepository
+      include Repository
 
       def find_by_host(host)
         query do
