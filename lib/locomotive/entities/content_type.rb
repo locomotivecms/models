@@ -2,17 +2,22 @@ module Locomotive
   module Entities
     class ContentType < Hash
 
-      attr_accessor :name, :description, :slug, :order_by
+      class << self
+        def attributes
+          [:name, :description, :slug, :order_by]
+        end
+      end
 
+      attr_accessor *attributes
       def initialize hash
-        [ :name, :description, :slug, :order_by ].each do |attribute|
+        self.class.attributes.each do |attribute|
           self.send(:"#{attribute}=", hash.send(attribute)) rescue NoMethodError
         end
       end
 
       def to_s
         str = '{'
-        str += [ :name, :description, :slug, :order_by ].map do |attribute|
+        str += self.class.attributes.map do |attribute|
             ":#{attribute} => #{self.send(attribute)}"
         end.join(', ')
         str += '}'
