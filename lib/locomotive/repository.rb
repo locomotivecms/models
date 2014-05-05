@@ -1,10 +1,14 @@
 module Locomotive
 
-  class Repository
+  module Repository
 
     def initialize(datastore, adapter)
       @datastore  = datastore
       @adapter    = adapter
+    end
+
+    def all
+      @adapter.all(collection)
     end
 
     def find(slug)
@@ -13,6 +17,10 @@ module Locomotive
 
     def query(&block)
       @adapter.query(collection, &block)
+    end
+
+    def create entity
+      @adapter.create(collection, entity)
     end
 
     def collection

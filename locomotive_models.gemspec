@@ -47,7 +47,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'rake',                '~> 10.3.1'
   spec.add_development_dependency 'rspec',               '~> 2.14.1'
-  spec.add_development_dependency 'mocha',               '~> 1.0.0'
+  # spec.add_development_dependency 'mocha',               '~> 1.0.0'
 
   # spec.add_development_dependency 'rack-test',           '~> 0.6.1'
   # spec.add_development_dependency 'ruby-debug-wrapper',  '~> 0.0.1'
