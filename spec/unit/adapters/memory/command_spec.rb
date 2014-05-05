@@ -17,7 +17,7 @@ describe Locomotive::Adapters::Memory::Command do
     end
 
     specify do
-      expect(dataset.all.first).to be_instance_of(Locomotive::Entities::Site)
+      expect(dataset.all.first).to be_instance_of(Hash)
     end
 
     specify do

@@ -1,5 +1,16 @@
+# Force encoding to UTF-8
+Encoding.default_internal = Encoding.default_external = 'UTF-8'
+
+# Remove I18n warnings
+require 'i18n'
+I18n.config.enforce_available_locales = true
+
+require 'active_support'
+require 'active_support/core_ext'
+
 require_relative 'locomotive/core_ext'
 
+require_relative 'locomotive/fields'
 Dir[File.dirname(__FILE__) + '/locomotive/entities/*.rb'].each { |file| require file }
 
 require_relative 'locomotive/mapper'

@@ -4,14 +4,22 @@ module Locomotive
   module Entities
     class Site < Entity
 
-      class << self
-        def attributes
-          [ :name, :subdomain, :domains, :locales, :seo_title,
-            :meta_keywords, :meta_description, :description ]
-        end
-      end
+      ## fields ##
+      field :name
+      field :locales
+      field :subdomain
+      field :domains
+      field :seo_title,         localized: true
+      field :meta_keywords,     localized: true
+      field :meta_description,  localized: true
+      field :robots_txt
+      field :timezone
 
-      attr_accessor *self.attributes
+      ## methods ##
+
+      def to_s
+        self.name
+      end
 
     end
   end

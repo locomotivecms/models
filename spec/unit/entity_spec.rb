@@ -1,16 +1,17 @@
 require 'spec_helper'
 
 describe Locomotive::Entity do
+  let(:attributes) {{ mounting_point: nil, name: 'bar' }}
+
   class FakeEntity < Locomotive::Entity
-    def self.attributes() [ :foo ] ; end
-    attr_accessor *self.attributes
+    field :name
   end
 
-  subject { FakeEntity.new({foo: 'bar'}) }
+  subject { FakeEntity.new(attributes) }
 
   describe '#to_record' do
-    it 'returns a hash' do
-      subject.to_record.should be_kind_of Hash
+    it 'returns a entity' do
+      subject.to_record.should eq({'name' => 'bar'})
     end
   end
 end
