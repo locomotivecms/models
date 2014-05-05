@@ -5,7 +5,7 @@ module Locomotive
     module Memory
       module Yaml
 
-        class ContentTypesLoader
+        class ContentTypeLoader
 
           def initialize(path)
             @root_path  = path
