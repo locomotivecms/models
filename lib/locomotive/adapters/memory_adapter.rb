@@ -14,6 +14,14 @@ module Locomotive
         @datasets = Hash.new { |hash, name| hash[name] = Memory::Dataset.new(@loader.get(name)) }
       end
 
+      def all(collection)
+        Locomotive::Mapping::Collection.new(collection).deserialize(dataset(collection).all)
+      end
+
+      def create(collection, entity)
+        dataset(collection).all << entity.to_record
+      end
+
       def first(collection)
         dataset(collection).first
       end
