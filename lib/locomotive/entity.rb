@@ -7,6 +7,10 @@ module Locomotive
       end
     end
 
+    def self.from_record record
+      new(record)
+    end
+
     def to_record
       self
     end

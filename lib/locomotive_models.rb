@@ -1,5 +1,6 @@
 require_relative 'locomotive/core_ext'
 require_relative 'locomotive/entities'
+require_relative 'locomotive/mapper'
 require_relative 'locomotive/mapping'
 require_relative 'locomotive/datastore'
 require_relative 'locomotive/mounting_point'
