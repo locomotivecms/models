@@ -1,7 +1,8 @@
 module Locomotive
   module Repositories
 
-    class ContentEntryRepository < Repository
+    class ContentEntryRepository
+      include Repository
 
     end
   end
