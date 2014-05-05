@@ -30,6 +30,30 @@ module Locomotive
       attr_writer :configuration
     end
 
+    #     # default locale
+    # @@locale = I18n.locale
+
+    # def self.mount(options)
+    #   @@mount_point = Locomotive::Mounter::Config[:reader].run!(options)
+    # end
+
+    def self.locale
+      configuration.locale
+    end
+
+    def self.locale=(locale)
+      configuration.locale = locale.to_sym
+    end
+
+    def self.with_locale(locale, &block)
+      current_locale = configuration.locale
+      yield.tap do
+        configuration.locale = locale.try(:to_sym)
+      end
+    ensure
+      configuration.locale = current_locale
+    end
+
     def self.configuration
       @configuration ||= Configuration.new
     end
@@ -43,3 +67,10 @@ module Locomotive
     end
   end
 end
+
+# Locomotive::Common.reset
+# Locomotive::Common.configure do |config|
+#   path = File.join(File.expand_path('log/models.log'))
+#   config.notifier = Locomotive::Common::Logger.setup(path)
+# end
+# Locomotive::Common::Logger.info 'Models...'

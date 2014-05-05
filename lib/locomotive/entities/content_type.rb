@@ -16,7 +16,7 @@ module Locomotive
       field :public_submission_accounts
       field :raw_item_template
 
-      field :fields, type: :array, class_name: 'Locomotive::Mounter::Models::ContentField'
+      field :fields, type: :array, class_name: 'Locomotive::Entities::ContentField'
 
       # field :entries, association: true
 
@@ -82,8 +82,9 @@ module Locomotive
                 entry.send(:"#{field.name}=", v)
               end
             rescue NoMethodError => e
-              Mounter.logger.error e.backtrace
-              raise FieldDoesNotExistException.new("The '#{self.slug}' content type does not have a field named '#{k}'.")
+              Locomotive::Common::Logger.error e.backtrace
+              raise FieldDoesNotExistException.new(
+                "The '#{self.slug}' content type does not have a field named '#{k}'.")
             end
           end
 

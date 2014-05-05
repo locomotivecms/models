@@ -44,6 +44,7 @@ Gem::Specification.new do |spec|
   # spec.add_dependency 'zip',                             '~> 2.0.2'
   # spec.add_dependency 'colorize',                        '~> 0.5.8'
   # spec.add_dependency 'logger'
+  spec.add_dependency 'locomotivecms_common',              '~> 0.0.1'
 
   spec.add_development_dependency 'rake',                '~> 10.3.1'
   spec.add_development_dependency 'rspec',               '~> 2.14.1'

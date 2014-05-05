@@ -4,6 +4,7 @@ PATH
     locomotivecms_models (0.0.1)
       activesupport (~> 4.1.0)
       i18n (~> 0.6.9)
+      locomotivecms_common (~> 0.0.1)
 
 GEM
   remote: https://rubygems.org/
