@@ -25,7 +25,7 @@ module Locomotive
         end
 
         # set default translation
-        self.add_locale(Locomotive::Models.configuration.locale)
+        self.add_locale(Locomotive::Models.locale)
 
         self.write_attributes(_attributes)
       end
@@ -167,7 +167,7 @@ module Locomotive
     def getter(name, options = {})
       value = self.instance_variable_get(:"@#{name}")
       if options[:localized]
-        value = (value || {})[Locomotive::Models.configuration.locale]
+        value = (value || {})[Locomotive::Models.locale]
       end
       value
     end
@@ -175,10 +175,10 @@ module Locomotive
     def setter(name, value, options = {})
       if options[:localized]
         # keep track of the current locale
-        self.add_locale(Locomotive::Models.configuration.locale)
+        self.add_locale(Locomotive::Models.locale)
 
         translations = self.instance_variable_get(:"@#{name}") || {}
-        translations[Locomotive::Models.configuration.locale] = value
+        translations[Locomotive::Models.locale] = value
         value = translations
       end
 

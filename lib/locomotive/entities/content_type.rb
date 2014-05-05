@@ -18,7 +18,7 @@ module Locomotive
 
       field :fields, type: :array, class_name: 'Locomotive::Entities::ContentField'
 
-      # field :entries, association: true
+      field :entries, association: true
 
       ## callbacks ##
       set_callback :initialize, :after, :sanitize
@@ -82,19 +82,16 @@ module Locomotive
                 entry.send(:"#{field.name}=", v)
               end
             rescue NoMethodError => e
-              Locomotive::Common::Logger.error e.backtrace
-              raise FieldDoesNotExistException.new(
-                "The '#{self.slug}' content type does not have a field named '#{k}'.")
+              Mounter.logger.error e.backtrace
+              raise FieldDoesNotExistException.new("The '#{self.slug}' content type does not have a field named '#{k}'.")
             end
           end
 
           # force the slug to be defined from its label and in all the locales
           entry.send :set_slug
-        end
-      end
 
-      def entries
-        @entries ||= Locomotive::Mounter::Collection.new
+          (self.entries ||= []) << entry
+        end
       end
 
       # Tell if the content type owns a field which defines
@@ -140,7 +137,7 @@ module Locomotive
       # @return [ Object ] The content entry if it exists or nil
       #
       def find_entry(id)
-        self.entries.all.detect { |entry| [entry._permalink, entry._label].include?(id) }
+        (self.entries || []).detect { |entry| [entry._permalink, entry._label].include?(id) }
       end
 
       # Find all the entries whose their _permalink or _label is among the ids
@@ -180,7 +177,8 @@ module Locomotive
       def to_params(options = nil)
         options = { all_fields: false }.merge(options || {})
 
-        params = self.filter_attributes %w(name slug description label_field_name group_by_field_name order_by order_direction public_submission_enabled raw_item_template)
+        params = self.filter_attributes %w(name slug description label_field_name group_by_field_name order_by
+           order_direction public_submission_enabled raw_item_template)
 
         # order by
         params[:order_by] = '_position' if self.order_by == 'manually'
@@ -198,7 +196,8 @@ module Locomotive
       # @return [ Hash ] A hash used by the to_yaml method
       #
       def to_hash
-        fields = %w(name slug description label_field_name order_by order_direction public_submission_enabled public_submission_accounts raw_item_template)
+        fields = %w(name slug description label_field_name order_by order_direction
+          public_submission_enabled public_submission_accounts raw_item_template)
 
         _attributes = self.attributes.delete_if { |k, v| !fields.include?(k.to_s) || v.blank? }.deep_stringify_keys
 

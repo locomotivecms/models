@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Models do
+describe Locomotive::Models, pending: true do
 
   subject do Locomotive::Models end
 

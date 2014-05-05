@@ -28,7 +28,7 @@ module Locomotive
           self.template
         end
 
-        @source[Locomotive::Models.configuration.locale] = source
+        @source[Locomotive::Models.locale] = source
       end
 
       # Return the params used for the API.

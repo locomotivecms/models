@@ -70,7 +70,7 @@ module Locomotive
           base  = self.parent.safe_fullpath
           _slug = if self.templatized? && !self.templatized_from_parent
             '*'
-          elsif !self.translated_in?(Locomotive::Models.configuration.locale)
+          elsif !self.translated_in?(Locomotive::Models.locale)
             self.slug_translations[self.mounting_point.default_locale]
           else
             self.slug
@@ -307,7 +307,7 @@ module Locomotive
       #
       def raw_template=(content)
         @source ||= {}
-        @source[Locomotive::Models.configuration.locale] = content
+        @source[Locomotive::Models.locale] = content
       end
 
       # Return the Liquid template based on the raw_template property
@@ -318,10 +318,10 @@ module Locomotive
       def source
         @source ||= {}
 
-        if @source[Locomotive::Models.configuration.locale]
-          @source[Locomotive::Models.configuration.locale] # memoization
+        if @source[Locomotive::Models.locale]
+          @source[Locomotive::Models.locale] # memoization
         elsif self.template
-          @source[Locomotive::Models.configuration.locale] = self.template.source
+          @source[Locomotive::Models.locale] = self.template.source
         else
           nil
         end
