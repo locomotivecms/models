@@ -1,17 +1,17 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Locomotive::Repositories::SiteRepository do
+describe Locomotive::Repositories::ContentTypeRepository do
   let(:datastore)  { Locomotive::Datastore.new }
   let(:adapter)    { Locomotive::Adapters::MemoryAdapter.new }
-  let(:repository) { Locomotive::Repositories::ContentTypesRepository.new(datastore, adapter) }
+  let(:repository) { Locomotive::Repositories::ContentTypeRepository.new(datastore, adapter) }
 
   context 'with content types' do
-    let(:content_type) { OpenStruct.new(name: 'Bands', description: 'List of bands') }
+    let(:content_type)  { OpenStruct.new(name: 'Bands', description: 'List of bands') }
     let(:content_types) { Locomotive::Adapters::Memory::Dataset.new([content_type]) }
 
     before do
-      expect(adapter).to receive(:dataset).with(:content_types) { content_types }
+      expect(adapter).to receive(:dataset).with(:content_type) { content_types }
     end
 
     describe '#all' do

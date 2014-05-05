@@ -1,7 +1,7 @@
 module Locomotive
   module Repositories
 
-    class ContentTypesRepository
+    class ContentTypeRepository
       include Repository
 
       def find_by_site(host)
