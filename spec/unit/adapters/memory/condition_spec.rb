@@ -80,6 +80,17 @@ describe Locomotive::Adapters::Memory::Condition do
     end
   end
 
+  describe '#decode_operator_based_on_name' do
+    context 'with unsupported operator' do
+      let(:name) { 'domains.unsupported' }
+      specify('should be throw Exception') do
+        expect do
+          subject.send(:decode_operator_based_on_name)
+        end.to raise_error Locomotive::Adapters::Memory::Condition::UnsupportedOperator
+      end
+    end
+  end
+
   describe '#decode_operator_based_on_value' do
     let(:name) { 'domains.==' }
     before do
