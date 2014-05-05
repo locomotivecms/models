@@ -24,7 +24,7 @@ module Locomotive
 
       def constantize name
         { site: 'Site',
-          content_type: 'ContentType'
+          content_types: 'ContentType'
         }[name]
       end
 
