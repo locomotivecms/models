@@ -1,5 +1,7 @@
 require_relative 'locomotive/core_ext'
-require_relative 'locomotive/entities'
+
+Dir[File.dirname(__FILE__) + '/locomotive/entities/*.rb'].each { |file| require file }
+
 require_relative 'locomotive/mapper'
 require_relative 'locomotive/mapping'
 require_relative 'locomotive/datastore'

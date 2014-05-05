@@ -18,10 +18,6 @@ module Locomotive
       @site ||= repository(:site).find_by_host(host)
     end
 
-    def content_type
-      @content_type ||= repository(:content_type).find_by_site(site)
-    end
-
     protected
 
     def repository(collection_name)
