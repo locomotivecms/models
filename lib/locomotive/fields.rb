@@ -2,6 +2,8 @@ module Locomotive
   module Fields
     extend ActiveSupport::Concern
 
+    class FieldDoesNotExistException < StandardError ; end
+
     included do
       include ActiveSupport::Callbacks
       define_callbacks :initialize
@@ -16,17 +18,10 @@ module Locomotive
     def initialize(attributes = {})
       run_callbacks :initialize do
         _attributes = attributes.symbolize_keys
-
-        # set default values
-        self.class._fields.each do |name, options|
-          next if !options.key?(:default) || _attributes.key?(name)
-
-          _attributes[name] = options[:default]
-        end
+        set_default _attributes
 
         # set default translation
         self.add_locale(Locomotive::Models.locale)
-
         self.write_attributes(_attributes)
       end
     end
@@ -38,23 +33,20 @@ module Locomotive
     # @param [ Hash ] attributes The new attributes
     #
     def write_attributes(attributes)
-      return if attributes.blank?
+      Array(attributes).each do |name, value|
+        next if identity?(name)
 
-      attributes.each do |name, value|
-        unless self.class._fields.key?(name.to_sym) || self.respond_to?(:"#{name}=")
-          next if name.to_s == 'id'
-          raise FieldDoesNotExistException.new(
-            "[#{self.class.inspect}] setting an unknown attribute '#{name}' with the value '#{value.inspect}'")
+        unless field_not_exists?(name) || attribute_not_exists?(name)
+          attribute_cannot_be_written! name, value
         end
 
-        if self.localized_field?(name) && value.is_a?(Hash)
-          self.send(:"#{name}_translations=", value)
+        if self.localized_field?(name) && value.respond_to?(:to_hash)
+          self.send(:"#{name}_translations=", value.to_hash)
         else
           self.send(:"#{name}=", value)
         end
       end
     end
-
     alias :attributes= :write_attributes
 
     # Return the fields with their values
@@ -80,11 +72,9 @@ module Locomotive
 
           if options[:localized]
             value = self.send(:"#{name}_translations")
-
+            # TODO should be modified
             value = value.values.first if value.size == 1
-
             value = nil if value.respond_to?(:empty?) && value.empty?
-
             _attributes[name] = value
           else
             _attributes[name] = self.send(name.to_sym)
@@ -133,11 +123,8 @@ module Locomotive
     #
     def to_hash(translations = true)
       hash = translations ? self.attributes_with_translations : self.attributes
-
       hash.delete_if { |k, v| (!v.is_a?(FalseClass) && v.blank?) }
-
       hash.each { |k, v| hash[k] = v.to_s if v.is_a?(Symbol) }
-
       hash.deep_stringify_keys
     end
 
@@ -166,28 +153,29 @@ module Locomotive
 
     def getter(name, options = {})
       value = self.instance_variable_get(:"@#{name}")
-      if options[:localized]
-        value = (value || {})[Locomotive::Models.locale]
-      end
+      value = (value || {})[Locomotive::Models.locale] if options[:localized]
       value
     end
 
     def setter(name, value, options = {})
       if options[:localized]
+        # TODO should be modified
         # keep track of the current locale
         self.add_locale(Locomotive::Models.locale)
-
         translations = self.instance_variable_get(:"@#{name}") || {}
         translations[Locomotive::Models.locale] = value
         value = translations
-      end
+        self.instance_variable_set(:"@#{name}", value)
 
-      if options[:type] == :array
-        klass = options[:class_name].constantize
-        value = value.map { |object| object.is_a?(Hash) ? klass.new(object) : object }
+        # translations = self.send(:"#{name}_translations")
+        # self.send(:"#{name}_translations=", translations.merge(value.to_hash))
+      else
+        if options[:type] == :array
+          klass = options[:class_name].constantize
+          value = value.map { |object| object.is_a?(Hash) ? klass.new(object) : object }
+        end
+        self.instance_variable_set(:"@#{name}", value)
       end
-
-      self.instance_variable_set(:"@#{name}", value)
     end
 
     def add_locale(locale)
@@ -238,6 +226,41 @@ module Locomotive
         end
       end
 
+    end
+
+    private
+
+    def set_default attributes
+      # set default values
+      self.class._fields.each do |name, options|
+        next if no_default_provided(options) || field_already_defined(attributes, name)
+        attributes[name] = options[:default]
+      end
+    end
+
+    def no_default_provided options
+      !options.has_key?(:default)
+    end
+
+    def field_already_defined attributes, name
+      attributes.has_key?(name)
+    end
+
+    def identity? key
+      key.to_s == 'id'
+    end
+
+    def field_not_exists? name
+      self.class._fields.key?(name.to_sym)
+    end
+
+    def attribute_not_exists? name
+      self.respond_to?(:"#{name}=")
+    end
+
+    def attribute_cannot_be_written! name, value
+      raise FieldDoesNotExistException.new(
+        "[#{self.class.inspect}] setting an unknown attribute '#{name}' with the value '#{value.inspect}'")
     end
 
   end
