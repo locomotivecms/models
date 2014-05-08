@@ -40,8 +40,8 @@ module Locomotive
           attribute_cannot_be_written! name, value
         end
 
-        if self.localized_field?(name) && value.respond_to?(:to_hash)
-          self.send(:"#{name}_translations=", value.to_hash)
+        if self.localized_field?(name)
+          self.send(:"#{name}_translations=", convert_localized_value(value))
         else
           self.send(:"#{name}=", value)
         end
@@ -72,9 +72,8 @@ module Locomotive
 
           if options[:localized]
             value = self.send(:"#{name}_translations")
-            # TODO should be modified
-            value = value.values.first if value.size == 1
-            value = nil if value.respond_to?(:empty?) && value.empty?
+            # TODO i'm very unconfortable with this polymorphique approach.
+            value = with_one_translation_give_the_first_value value
             _attributes[name] = value
           else
             _attributes[name] = self.send(name.to_sym)
@@ -153,22 +152,15 @@ module Locomotive
 
     def getter(name, options = {})
       value = self.instance_variable_get(:"@#{name}")
-      value = (value || {})[Locomotive::Models.locale] if options[:localized]
+      value = value.to_s(Locomotive::Models.locale) if options[:localized]
       value
     end
 
     def setter(name, value, options = {})
       if options[:localized]
-        # TODO should be modified
-        # keep track of the current locale
-        self.add_locale(Locomotive::Models.locale)
-        translations = self.instance_variable_get(:"@#{name}") || {}
-        translations[Locomotive::Models.locale] = value
-        value = translations
-        self.instance_variable_set(:"@#{name}", value)
-
-        # translations = self.send(:"#{name}_translations")
-        # self.send(:"#{name}_translations=", translations.merge(value.to_hash))
+        i18n_field = self.instance_variable_get(:"@#{name}")
+        i18n_field = add_or_override_value(name, value)
+        self.send(:"#{name}_translations=", i18n_field)
       else
         if options[:type] == :array
           klass = options[:class_name].constantize
@@ -215,12 +207,12 @@ module Locomotive
         if options[:localized]
           class_eval <<-EOV
             def #{name}_translations
-              @#{name} || {}
+              @#{name}.try(:translations).try(:symbolize_keys) || {}
             end
 
-            def #{name}_translations=(translations)
-              translations.each { |locale, value| self.add_locale(locale) }
-              @#{name} = translations.symbolize_keys
+            def #{name}_translations=(i18n_field)
+              i18n_field.translations.each { |locale, value| self.add_locale(locale) }
+              @#{name} = i18n_field
             end
           EOV
         end
@@ -229,6 +221,33 @@ module Locomotive
     end
 
     private
+
+    def add_or_override_value(name, value)
+      i18n_field = self.instance_variable_get(:"@#{name}")
+      unless i18n_field
+        i18n_field = Locomotive::I18nField.new(value)
+      else
+        i18n_field.value = convert_localized_value(value)
+      end
+      i18n_field
+    end
+
+    def convert_localized_value value
+      if value.respond_to?(:to_hash)
+        i18n_field = I18nField.new value.to_hash
+      else # TODO I think is a bad idea to introduce this flexibility
+        i18n_field = I18nField.new({ Locomotive::Models.locale => value })
+      end
+      i18n_field
+    end
+
+    def with_one_translation_give_the_first_value value
+      if value.size == 1
+        value = value.values.first if value.size == 1
+        value = nil if value.respond_to?(:empty?) && value.empty?
+      end
+      value
+    end
 
     def set_default attributes
       # set default values

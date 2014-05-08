@@ -11,6 +11,8 @@ require 'active_support/core_ext'
 require_relative 'locomotive/core_ext'
 
 require_relative 'locomotive/fields'
+require_relative 'locomotive/i18n_field'
+
 Dir[File.dirname(__FILE__) + '/locomotive/entities/*.rb'].each { |file| require file }
 
 require_relative 'locomotive/mapper'
@@ -76,7 +78,11 @@ module Locomotive
     end
 
     def self.reset
-      @configuration = Configuration.new
+      @configuration = begin
+        _configuration = Configuration.new
+        locale
+        _configuration
+      end
     end
 
     def self.configure

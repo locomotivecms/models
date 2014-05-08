@@ -23,7 +23,6 @@ describe Locomotive::Entities::ContentSelectOption do
       option.localized_field?(:name).should be_true
       option.name.should == 'Hello world'
       Locomotive::Models.with_locale(:fr) { option.name.should be_nil }
-
     end
 
     it 'sets a complete translation of a localized attribute' do
