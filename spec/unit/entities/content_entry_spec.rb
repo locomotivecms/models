@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ContentEntry do
+describe Locomotive::Entities::ContentEntry, pending: true do
 
   let(:content_type) do
     content_type = double
@@ -21,7 +21,7 @@ describe Locomotive::Entities::ContentEntry do
 
   describe 'setting default attributes' do
 
-    it 'builds an empty content entry' do
+    it 'builds an empty content entry'  do
       content_entry.should_not be_nil
     end
 

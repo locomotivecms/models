@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::Site do
+describe Locomotive::Entities::Site, pending: true do
 
   it 'builds an empty site' do
     build_site.should_not be_nil
