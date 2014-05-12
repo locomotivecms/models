@@ -25,7 +25,7 @@ describe Locomotive::Entities::Snippet do
 
     it 'sets a complete translation of a localized attribute' do
       snippet = build_snippet(template: { en: 'header.liquid.haml', fr: 'header.fr.liquid.haml' })
-      snippet.template.should eq en: 'header.liquid.haml', fr: 'header.fr.liquid.haml' 
+      snippet.template.should eq en: 'header.liquid.haml', fr: 'header.fr.liquid.haml'
     end
 
   end
@@ -51,7 +51,7 @@ describe Locomotive::Entities::Snippet do
   describe '#source' do
     subject { build_snippet attributes }
 
-    let(:attributes) { { template: { en: template_path } } }
+    let(:attributes) {{ template: { en: template_path } }}
     let(:template_path) { 'a/en/path' }
 
     context 'when template is a path' do
@@ -64,6 +64,12 @@ describe Locomotive::Entities::Snippet do
       let(:template_path) { double(source: 'template rendered') }
       it 'returns the rendered template' do
         subject.source(:en).should eq 'template rendered'
+      end
+      context '#to_params' do
+        let(:attributes) {{ name: 'foo', slug: '123', template: { en: template_path } }}
+        it 'returns ' do
+          subject.to_params(:en).should eq name: 'foo', slug: '123', template: 'template rendered'
+        end
       end
     end
 
