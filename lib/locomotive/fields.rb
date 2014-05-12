@@ -8,7 +8,6 @@ module Locomotive
       include ActiveSupport::Callbacks
       define_callbacks :initialize
       class << self; attr_accessor :_fields end
-      attr_accessor :_locales
     end
 
     # Default constructor
@@ -19,9 +18,6 @@ module Locomotive
       run_callbacks :initialize do
         _attributes = attributes.symbolize_keys
         set_default _attributes
-
-        # set default translation
-        self.add_locale(Locomotive::Models.locale)
         self.write_attributes(_attributes)
       end
     end
@@ -36,15 +32,11 @@ module Locomotive
       Array(attributes).each do |name, value|
         next if identity?(name)
 
-        unless field_not_exists?(name) || attribute_not_exists?(name)
+        unless field_not_exists?(name) || not_dynamic_attribute?(name)
           attribute_cannot_be_written! name, value
         end
 
-        if self.localized_field?(name)
-          self.send(:"#{name}_translations=", convert_localized_value(value))
-        else
-          self.send(:"#{name}=", value)
-        end
+        self.send(:"#{name}=", value)
       end
     end
     alias :attributes= :write_attributes
@@ -60,27 +52,7 @@ module Locomotive
         end
       end
     end
-
-    # Return the fields with their values and their translations
-    #
-    # @return [ Hash ] The attributes
-    #
-    def attributes_with_translations
-      {}.tap do |_attributes|
-        self.class._fields.each do |name, options|
-          next if options[:association]
-
-          if options[:localized]
-            value = self.send(:"#{name}_translations")
-            # TODO i'm very unconfortable with this polymorphique approach.
-            value = with_one_translation_give_the_first_value value
-            _attributes[name] = value
-          else
-            _attributes[name] = self.send(name.to_sym)
-          end
-        end
-      end
-    end
+    # deprecate :attributes_with_translations, :attributes
 
     # Check if the field specified by the argument is localized
     #
@@ -121,7 +93,7 @@ module Locomotive
     # @return [ Hash ] The non blank attributes
     #
     def to_hash(translations = true)
-      hash = translations ? self.attributes_with_translations : self.attributes
+      hash = self.attributes
       hash.delete_if { |k, v| (!v.is_a?(FalseClass) && v.blank?) }
       hash.each { |k, v| hash[k] = v.to_s if v.is_a?(Symbol) }
       hash.deep_stringify_keys
@@ -151,28 +123,26 @@ module Locomotive
     protected
 
     def getter(name, options = {})
-      value = self.instance_variable_get(:"@#{name}")
-      value = value.to_s(Locomotive::Models.locale) if options[:localized]
-      value
+      self.instance_variable_get(:"@#{name}").try(:value)
     end
 
     def setter(name, value, options = {})
-      if options[:localized]
-        i18n_field = self.instance_variable_get(:"@#{name}")
-        i18n_field = add_or_override_value(name, value)
-        self.send(:"#{name}_translations=", i18n_field)
-      else
-        if options[:type] == :array
-          klass = options[:class_name].constantize
-          value = value.map { |object| object.is_a?(Hash) ? klass.new(object) : object }
-        end
-        self.instance_variable_set(:"@#{name}", value)
-      end
+      _field = field_object(name, options)
+      _field.value = value
+      self.instance_variable_set(:"@#{name}", _field)
     end
 
-    def add_locale(locale)
-      self._locales ||= []
-      self._locales << locale.to_sym unless self._locales.include?(locale.to_sym)
+    def field_object name, options
+      self.instance_variable_get(:"@#{name}") || if self.localized_field?(name)
+        I18nField.new options
+      else
+        case options[:type]
+        when :array
+          ArrayField.new options
+        else
+          BaseField.new options
+        end
+      end
     end
 
     module ClassMethods
@@ -196,58 +166,26 @@ module Locomotive
           end
 
           def #{name}=(value)
-            self.setter '#{name}', value, self.class._fields[:#{name}] #, #{options[:localized]}
+            self.setter '#{name}', value, self.class._fields[:#{name}]
           end
 
           def #{name}_localized?
             #{options[:localized]}
           end
         EOV
-
-        if options[:localized]
-          class_eval <<-EOV
-            def #{name}_translations
-              @#{name}.try(:translations).try(:symbolize_keys) || {}
-            end
-
-            def #{name}_translations=(i18n_field)
-              i18n_field.translations.each { |locale, value| self.add_locale(locale) }
-              @#{name} = i18n_field
-            end
-          EOV
-        end
       end
 
     end
 
     private
 
-    def add_or_override_value(name, value)
-      i18n_field = self.instance_variable_get(:"@#{name}")
-      unless i18n_field
-        i18n_field = Locomotive::I18nField.new(value)
-      else
-        i18n_field.value = convert_localized_value(value)
-      end
-      i18n_field
-    end
-
-    def convert_localized_value value
-      if value.respond_to?(:to_hash)
-        i18n_field = I18nField.new value.to_hash
-      else # TODO I think is a bad idea to introduce this flexibility
-        i18n_field = I18nField.new({ Locomotive::Models.locale => value })
-      end
-      i18n_field
-    end
-
-    def with_one_translation_give_the_first_value value
-      if value.size == 1
-        value = value.values.first if value.size == 1
-        value = nil if value.respond_to?(:empty?) && value.empty?
-      end
-      value
-    end
+    # def with_one_translation_give_the_first_value value
+    #   if value.size == 1
+    #     value = value.values.first if value.size == 1
+    #     value = nil if value.respond_to?(:empty?) && value.empty?
+    #   end
+    #   value
+    # end
 
     def set_default attributes
       # set default values
@@ -273,7 +211,7 @@ module Locomotive
       self.class._fields.key?(name.to_sym)
     end
 
-    def attribute_not_exists? name
+    def not_dynamic_attribute? name
       self.respond_to?(:"#{name}=")
     end
 
@@ -282,5 +220,16 @@ module Locomotive
         "[#{self.class.inspect}] setting an unknown attribute '#{name}' with the value '#{value.inspect}'")
     end
 
+    def _locales
+      [].tap do |locales|
+        self.class._fields.each do |name, options|
+          if localized_field?(name)
+            (self.instance_variable_get(:"@#{name}").try(:locales)||[]).each do |_locale|
+              locales << _locale unless locales.include?(_locale)
+            end
+          end
+        end
+      end
+    end
   end
 end

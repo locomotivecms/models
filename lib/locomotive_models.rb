@@ -11,7 +11,7 @@ require 'active_support/core_ext'
 require_relative 'locomotive/core_ext'
 
 require_relative 'locomotive/fields'
-require_relative 'locomotive/i18n_field'
+Dir[File.dirname(__FILE__) + '/locomotive/fields/*.rb'].each { |file| require file }
 
 Dir[File.dirname(__FILE__) + '/locomotive/entities/*.rb'].each { |file| require file }
 
@@ -32,57 +32,12 @@ module Locomotive
       attr_writer :configuration
     end
 
-    #     # default locale
-    @@locale = :en
-
-    # def self.mount(options)
-    #   @@mount_point = Locomotive::Mounter::Config[:reader].run!(options)
-    # end
-
-    def self.locale
-      @@locale ||= begin
-        self.locale=(self.configuration.locale)
-      end
-    end
-
-    def self.locale=(locale)
-      @@locale = locale.to_sym
-    end
-
-    def self.with_locale(locale, &block)
-      tmp, @@locale = @@locale, locale.try(:to_sym) || @@locale
-      yield.tap do
-        @@locale = tmp
-      end
-    end
-
-    # def self.locale
-    #   @@locale = configuration.locale
-    # end
-    #
-    # def self.locale=(locale)
-    #   configuration.locale = locale.to_sym
-    # end
-    #
-    # def self.with_locale(locale, &block)
-    #   current_locale = configuration.locale
-    #   yield.tap do
-    #     configuration.locale = locale.try(:to_sym)
-    #   end
-    # ensure
-    #   configuration.locale = current_locale
-    # end
-
     def self.configuration
       @configuration ||= Configuration.new
     end
 
     def self.reset
-      @configuration = begin
-        _configuration = Configuration.new
-        locale
-        _configuration
-      end
+      @configuration = Configuration.new
     end
 
     def self.configure

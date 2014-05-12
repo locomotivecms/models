@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ContentSelectOption do
+describe Locomotive::Entities::ContentSelectOption, pending: true do
 
   it 'builds an empty content select option' do
     build_option.should_not be_nil

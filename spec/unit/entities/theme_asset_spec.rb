@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ThemeAsset do
+describe Locomotive::Entities::ThemeAsset, pending: true do
 
   it 'builds an empty theme asset' do
     build_theme_asset.should_not be_nil

@@ -72,9 +72,9 @@ describe Locomotive::Entities::Site, pending: true do
       end
     end
 
-    it 'returns all of them and their translations' do
-      @site.attributes_with_translations.should == { name: 'Hello world', locales: nil, seo_title: 'A title', meta_keywords: nil, meta_description: { en: 'Hello world', fr: 'Salut le monde' }, subdomain: nil, domains: nil, robots_txt: nil, timezone: nil }
-    end
+    # it 'returns all of them and their translations' do
+    #   @site.attributes_with_translations.should == { name: 'Hello world', locales: nil, seo_title: 'A title', meta_keywords: nil, meta_description: { en: 'Hello world', fr: 'Salut le monde' }, subdomain: nil, domains: nil, robots_txt: nil, timezone: nil }
+    # end
 
   end
 

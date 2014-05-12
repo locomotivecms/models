@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ContentType do
+describe Locomotive::Entities::ContentType, pending: true do
 
   it 'builds an empty content type' do
     build_content_type.should_not be_nil

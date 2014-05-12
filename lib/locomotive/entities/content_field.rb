@@ -20,6 +20,9 @@ module Locomotive
       # select
       field :select_options, type: :array, class_name: 'Locomotive::Entities::ContentSelectOption'
 
+      # { select_options: [ { name: 'foo', position: 0}, ... ] }
+      # { select_options: [ ContentSelectOption.new({ name: 'foo', position: 0}), ... ] }
+
       # relationships: belongs_to, has_many, many_to_many
       field :class_slug # out
       field :class_name # in

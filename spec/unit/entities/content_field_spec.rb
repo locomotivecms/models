@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ContentField do
+describe Locomotive::Entities::ContentField, pending: true do
 
   it 'builds an empty content field' do
     build_content_field.should_not be_nil
