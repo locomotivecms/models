@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ContentField, pending: true do
+describe Locomotive::Entities::ContentField do
 
   it 'builds an empty content field' do
     build_content_field.should_not be_nil
@@ -8,10 +8,10 @@ describe Locomotive::Entities::ContentField, pending: true do
 
   describe 'building a content type from attributes' do
 
-    it 'raises an exception of the field does not exist' do
-      lambda {
+    it 'raises an exception if the field does not exist' do
+      expect {
         build_content_field(foo: 'Hello world')
-      }.should raise_exception
+      }.to raise_error Locomotive::Fields::FieldDoesNotExistException
     end
 
     it 'has a default label based on the name' do
@@ -63,8 +63,9 @@ describe Locomotive::Entities::ContentField, pending: true do
     context 'with not localized options' do
 
       let(:options) { build_options(['IT', 'Business']) }
-      it { should == ['IT', 'Business'] }
-
+      it 'rejects non localized input' do
+        expect { subject }.to raise_error Locomotive::AbstractField::UnsupportedFormat
+      end
     end
 
     context 'partially localized options' do

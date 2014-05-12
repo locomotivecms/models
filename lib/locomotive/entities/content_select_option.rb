@@ -17,7 +17,7 @@ module Locomotive
       # @return [ Hash ] The params
       #
       def to_params(options = nil)
-        { name: self.name_translations, position: self.position }.tap do |params|
+        { name: self.name, position: self.position }.tap do |params|
           params[:id] = self._id if self.persisted?
         end
       end

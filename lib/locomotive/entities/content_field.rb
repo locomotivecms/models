@@ -169,14 +169,14 @@ module Locomotive
       end
 
       def select_options_to_hash
-        locales = self.select_options.map { |option| option.translated_in }.flatten.uniq
+        locales = self.select_options.map { |option| option.name.keys }.flatten.uniq
         options = self.select_options.sort { |a, b| a.position <=> b.position }
 
         if locales.size > 1
           {}.tap do |by_locales|
             locales.each do |locale|
               options.each do |option|
-                (by_locales[locale.to_s] ||= []) << option.name_translations[locale]
+                (by_locales[locale.to_s] ||= []) << option.name[locale]
               end
             end
           end

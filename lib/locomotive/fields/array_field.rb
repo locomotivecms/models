@@ -3,7 +3,7 @@ module Locomotive
     class ArrayField < AbstractField
 
       def value= _values
-        @value = _values.map { |object| object.respond_to?(:to_hash) ? klass.new(object) : object }
+        @value = _values.map { |object| object.respond_to?(:to_hash) ? klass.new(object.to_hash) : object }
       end
 
       def value
