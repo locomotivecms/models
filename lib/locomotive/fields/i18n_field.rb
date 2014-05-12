@@ -1,3 +1,5 @@
+require_relative 'abstract_field'
+
 module Locomotive
   module Fields
     class I18nField < AbstractField
