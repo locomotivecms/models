@@ -35,11 +35,11 @@ module Locomotive
       #
       # @return [ Hash ] The params
       #
-      def to_params
+      def to_params(locale)
         params = self.filter_attributes %w(name slug)
 
         # raw_template
-        params[:template] = self.source rescue nil
+        params[:template] = self.source(locale) # rescue nil
 
         params
       end
