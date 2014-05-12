@@ -21,7 +21,7 @@ module Locomotive
     end
 
     def to_record
-      self.to_hash(translations = true)
+      self.to_hash
     end
 
     def to_s

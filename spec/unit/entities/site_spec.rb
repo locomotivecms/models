@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::Site, pending: true do
+describe Locomotive::Entities::Site do
 
   it 'builds an empty site' do
     build_site.should_not be_nil
@@ -8,10 +8,10 @@ describe Locomotive::Entities::Site, pending: true do
 
   describe 'building a site from attributes' do
 
-    it 'raises an exception of the field does not exist' do
-      lambda {
+    it 'raises an exception if the field does not exist' do
+      expect {
         build_site(template: 'Hello world')
-      }.should raise_exception
+      }.to raise_error
     end
 
     it 'sets a simple attribute' do
@@ -23,59 +23,40 @@ describe Locomotive::Entities::Site, pending: true do
     end
 
     it 'sets a localized attribute' do
-      site = build_site(seo_title: 'Hello world')
-      site.seo_title.should == 'Hello world'
-      Locomotive::Models.with_locale(:fr) { site.seo_title.should be_nil }
-
+      site = build_site(seo_title: { en: 'Hello world' })
+      site.seo_title.should eq({ en: 'Hello world' })
     end
 
     it 'sets a complete translation of a localized attribute' do
       site = build_site(seo_title: { en: 'Hello world', fr: 'Salut le monde' })
-      site.seo_title.should == 'Hello world'
-      Locomotive::Models.with_locale(:fr) { site.seo_title.should == 'Salut le monde' }
+      site.seo_title.should == { en: 'Hello world', fr: 'Salut le monde' }
     end
-
   end
 
   describe 'setting attributes' do
-
-    before(:each) do
-      @site = build_site
-    end
+    let(:site) { build_site }
 
     it 'sets a simple attribute' do
-      @site.name = 'Hello world'
-      @site.name.should == 'Hello world'
+      site.name = 'Hello world'
+      site.name.should == 'Hello world'
     end
 
-    it 'sets a localized attribute' do
-      @site.seo_title = 'Hello world'
-      @site.seo_title.should == 'Hello world'
-      @site.seo_title_translations[:en].should == 'Hello world'
+    it 'reject scalar for localized attribute' do
+      expect { site.seo_title = 'Hello world' }.to raise_error(Locomotive::AbstractField::UnsupportedFormat)
     end
-
   end
 
   describe 'retrieving attributes' do
-
-    before(:each) do
-      @site = build_site(name: 'Hello world', seo_title: 'A title', meta_description: { en: 'Hello world', fr: 'Salut le monde' })
+    let(:site) do
+      build_site(name: 'Hello world', seo_title: { en: 'A title' },
+        meta_description: { en: 'Hello world', fr: 'Salut le monde' })
     end
 
     it 'returns all of them' do
-      @site.attributes.should == { name: 'Hello world', locales: nil, seo_title: 'A title', meta_keywords: nil, meta_description: 'Hello world', subdomain: nil, domains: nil, robots_txt: nil, timezone: nil }
+      site.attributes.should eq({ name: 'Hello world', locales: nil, seo_title: { en: 'A title' },
+        meta_keywords: nil, meta_description: { en: 'Hello world', fr: 'Salut le monde' },
+        subdomain: nil, domains: nil, robots_txt: nil, timezone: nil })
     end
-
-    it 'returns a localized version' do
-      Locomotive::Models.with_locale(:fr) do
-        @site.attributes.should == { name: 'Hello world', locales: nil, seo_title: nil, meta_keywords: nil, meta_description: 'Salut le monde', subdomain: nil, domains: nil, robots_txt: nil, timezone: nil }
-      end
-    end
-
-    # it 'returns all of them and their translations' do
-    #   @site.attributes_with_translations.should == { name: 'Hello world', locales: nil, seo_title: 'A title', meta_keywords: nil, meta_description: { en: 'Hello world', fr: 'Salut le monde' }, subdomain: nil, domains: nil, robots_txt: nil, timezone: nil }
-    # end
-
   end
 
   def build_site(attributes = {})

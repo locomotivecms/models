@@ -92,7 +92,7 @@ module Locomotive
     #
     # @return [ Hash ] The non blank attributes
     #
-    def to_hash(translations = true)
+    def to_hash
       hash = self.attributes
       hash.delete_if { |k, v| (!v.is_a?(FalseClass) && v.blank?) }
       hash.each { |k, v| hash[k] = v.to_s if v.is_a?(Symbol) }
