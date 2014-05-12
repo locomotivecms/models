@@ -17,18 +17,18 @@ module Locomotive
       #
       # @return [ String ] The liquid template
       #
-      def source
+      # TODO move this out of models to Steam
+      def source(locale)
         @source ||= {}
-
-        source = if self.template.respond_to?(:source)
-          # liquid or haml file
-          self.template.source
-        else
-          # simple string
-          self.template
+        @source[locale] ||= begin
+          if template[locale].respond_to?(:source)
+            # liquid or haml file
+            template[locale].source
+          else
+            # simple string
+            template[locale]
+          end
         end
-
-        @source[Locomotive::Models.locale] = source
       end
 
       # Return the params used for the API.
