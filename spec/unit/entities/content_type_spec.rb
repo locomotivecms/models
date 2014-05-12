@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Entities::ContentType, pending: true do
+describe Locomotive::Entities::ContentType do
 
   it 'builds an empty content type' do
     build_content_type.should_not be_nil
@@ -8,36 +8,35 @@ describe Locomotive::Entities::ContentType, pending: true do
 
   describe 'building a content type from attributes' do
 
-    it 'raises an exception of the field does not exist' do
-      lambda {
+    it 'raises an exception if the field does not exist' do
+      expect {
         build_content_type(foo: 'Hello world')
-      }.should raise_exception
+      }.to raise_error Locomotive::Fields::FieldDoesNotExistException
     end
 
+  end
+  let(:custom_fields) do
+   [
+      { label: 'Title', 'name' => 'title' },
+      { label: 'Description', 'name' => :description, type: :text }
+    ]
   end
 
   describe 'fields' do
 
-    before(:each) do
-      @fields = [
-        { label: 'Title', 'name' => 'title' },
-        { label: 'Description', 'name' => :description, type: :text }
-      ]
-    end
-
     it 'has 2 fields' do
-      build_content_type(fields: @fields).fields.size.should == 2
+      build_content_type(fields: custom_fields).fields.size.should == 2
     end
 
     it 'has the right class for each field' do
-      build_content_type(fields: @fields).fields.each do |field|
-        field.class.should == Locomotive::Entities::ContentField
+      build_content_type(fields: custom_fields).fields.each do |field|
+        field.class.should eq Locomotive::Entities::ContentField
       end
     end
 
     it 'sets the right types' do
-      build_content_type(fields: @fields).fields.first.type.should == :string
-      build_content_type(fields: @fields).fields.last.type.should == :text
+      build_content_type(fields: custom_fields).fields.first.type.should eq :string
+      build_content_type(fields: custom_fields).fields.last.type.should eq :text
     end
 
   end
@@ -60,6 +59,13 @@ describe Locomotive::Entities::ContentType, pending: true do
       content_type.send(:label_to_slug, 'hello-world').should == 'hello-world-2'
     end
 
+  end
+
+  describe '#find_field', pending: 'work on content_fields first' do
+    subject { build_content_type(fields: custom_fields) }
+    it 'returns the matching field' do
+      subject.find_field(:description).label.should eq 'Description'  
+    end
   end
 
   def build_content_type(attributes = {})
