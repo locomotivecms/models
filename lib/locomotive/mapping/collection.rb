@@ -2,21 +2,19 @@ module Locomotive
   module Mapping
     class Collection
 
-      attr_accessor :collection
+      attr_accessor :entity
 
-      def initialize collection
-        self.collection = collection
+      def initialize name
+        self.entity = eval("Locomotive::Entities::#{constantize(name)}")
       end
 
-      def serialize(entity)
-        entity.to_record
+      def serialize(record)
+        record.to_record
       end
 
       def deserialize(records)
-        [].tap do |data|
-          records.each do |record|
-            data << eval("Locomotive::Entities::#{constantize(collection)}").new(record)
-          end
+        records.map do |record|
+          entity.from_record(record)
         end
       end
 
@@ -24,7 +22,8 @@ module Locomotive
 
       def constantize name
         { site: 'Site',
-          content_types: 'ContentType'
+          content_type: 'ContentType',
+          content_entry: 'ContentEntry'
         }[name]
       end
 

@@ -1,13 +1,17 @@
 require 'spec_helper'
 
 describe Locomotive::Entity do
-  class FakeEntity < Locomotive::Entity; end
+  let(:attributes) {{ mounting_point: nil, name: 'bar' }}
 
-  subject { FakeEntity.new }
+  class FakeEntity < Locomotive::Entity
+    field :name
+  end
+
+  subject { FakeEntity.new(attributes) }
 
   describe '#to_record' do
-    it 'returns a hash' do
-      subject.to_record.should be_kind_of Hash
+    it 'returns an entity' do
+      subject.to_record.should eq({name: 'bar'})
     end
   end
 end

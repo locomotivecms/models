@@ -1,0 +1,26 @@
+require_relative '../entity'
+
+module Locomotive
+  module Entities
+    class ContentSelectOption < Entity
+
+      ## fields ##
+      field :name,      localized: true
+      field :position,  default: 0
+
+      ## methods ##
+
+      # Return the params used for the API.
+      #
+      # @param [ Hash ] options For now, none
+      #
+      # @return [ Hash ] The params
+      #
+      def to_params(options = nil)
+        { name: self.name, position: self.position }.tap do |params|
+          params[:id] = self._id if self.persisted?
+        end
+      end
+    end
+  end
+end

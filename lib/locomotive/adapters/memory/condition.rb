@@ -4,7 +4,9 @@ module Locomotive
 
       class Condition
 
-        OPERATORS = %w(all gt gte in lt lte ne nin size).freeze
+        class UnsupportedOperator < StandardError; end
+
+        OPERATORS = %i(== eq ne neq matches gt gte lt lte size all in nin).freeze
 
         attr_accessor :name, :operator, :right_operand
 
@@ -23,7 +25,9 @@ module Locomotive
 
           case self.operator
           when :==        then value == self.right_operand
+          when :eq        then value == self.right_operand
           when :ne        then value != self.right_operand
+          when :neq       then value != self.right_operand
           when :matches   then self.right_operand =~ value
           when :gt        then value > self.right_operand
           when :gte       then value >= self.right_operand
@@ -70,9 +74,12 @@ module Locomotive
         end
 
         def decode_operator_based_on_name
-          if match = name.match(/^(?<name>[a-z0-9_-]+)\.(?<operator>#{OPERATORS.join('|')})$/)
+          if match = name.match(/^(?<name>[a-z0-9_-]+)\.(?<operator>.*)$/)
             self.name     = match[:name].to_sym
             self.operator = match[:operator].to_sym
+            unless OPERATORS.include? self.operator
+              raise UnsupportedOperator.new
+            end
           end
 
           if self.right_operand.is_a?(Regexp)

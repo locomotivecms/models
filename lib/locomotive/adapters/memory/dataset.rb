@@ -11,11 +11,15 @@ module Locomotive
         def_delegators :query, :where, :order_by, :limit, :offset
 
         def initialize(loader)
-          @loader = loader
+          @loader  = loader
         end
 
         def each(&block)
           dataset.each(&block)
+        end
+
+        def create(entity)
+          all << entity
         end
 
         def all

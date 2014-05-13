@@ -17,7 +17,7 @@ module Locomotive
     def repositories
       {
         site: Repositories::SiteRepository.new(self, adapter),
-        content_types: Repositories::ContentTypesRepository.new(self, adapter),
+        content_type: Repositories::ContentTypeRepository.new(self, adapter),
       }
     end
 
