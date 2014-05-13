@@ -10,8 +10,8 @@ describe Locomotive::Entity do
   subject { FakeEntity.new(attributes) }
 
   describe '#to_record' do
-    it 'returns a entity' do
-      subject.to_record.should eq({'name' => 'bar'})
+    it 'returns an entity' do
+      subject.to_record.should eq({name: 'bar'})
     end
   end
 end

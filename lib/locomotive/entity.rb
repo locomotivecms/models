@@ -17,11 +17,11 @@ module Locomotive
     end
 
     def self.from_record record
-      new(record)
+      new(record.compact)
     end
 
     def to_record
-      self.to_hash
+      self.attributes
     end
 
     def to_s

@@ -135,28 +135,6 @@ module Locomotive
         params
       end
 
-      # Instead of returning a simple hash, it returns a hash with name as the key and
-      # the remaining attributes as the value.
-      #
-      # @return [ Hash ] A hash of hash
-      #
-      def to_hash
-        hash = super.delete_if { |k, v| %w(name position).include?(k) }
-
-        # class_name is chosen over class_slug
-        if self.is_relationship?
-          hash['class_name'] ||= hash['class_slug']
-          hash.delete('class_slug')
-        end
-
-        # select options
-        if self.type == :select
-          hash['select_options'] = self.select_options_to_hash
-        end
-
-        { self.name => hash }
-      end
-
       protected
 
       # Clean up useless properties depending on its type
