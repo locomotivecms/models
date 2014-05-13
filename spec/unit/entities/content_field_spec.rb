@@ -54,34 +54,27 @@ describe Locomotive::Entities::ContentField do
 
   end
 
-  describe '.select_options_to_hash' do
+  describe 'select options' do
 
     subject {
-      build_content_field(type: 'select', select_options: options).send(:select_options_to_hash)
+      build_content_field(type: 'select', select_options: options)
     }
 
-    context 'with not localized options' do
+    context 'rejects non hash input' do
 
       let(:options) { build_options(['IT', 'Business']) }
-      it 'rejects non localized input' do
+      it do
         expect { subject }.to raise_error Locomotive::AbstractField::UnsupportedFormat
       end
     end
 
-    context 'partially localized options' do
+    context 'hash input' do
 
       let(:options) { build_options([{ en: 'IT' }, { en: 'Business', fr: 'Business (FR)' }]) }
-      it { should == { 'en' => ['IT', 'Business'], 'fr' => [nil, 'Business (FR)'] } }
-
+      it { subject.select_options.size.should eq 2 }
+      it { subject.select_options.first.should be_a Locomotive::Entities::ContentSelectOption }
+      it { subject.select_options.first.name.should eq en: 'IT' }
     end
-
-    context 'fully localized options' do
-
-      let(:options) { build_options([{ en: 'IT', fr: 'IT (FR)' }, { en: 'Business', fr: 'Business (FR)' }]) }
-      it { should == { 'en' => ['IT', 'Business'], 'fr' => ['IT (FR)', 'Business (FR)'] } }
-
-    end
-
   end
 
   def build_content_field(attributes = {})

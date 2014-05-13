@@ -5,7 +5,7 @@ module Locomotive
     class ArrayField < AbstractField
 
       def value= _values
-        @value = _values.map { |object| object.respond_to?(:to_hash) ? klass.new(object.to_hash) : object }
+        @value = _values.map { |object| object.class == klass ? object : klass.new(object) }
       end
 
       def value
