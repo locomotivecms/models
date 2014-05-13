@@ -1,14 +1,14 @@
 module Locomotive
   module Presenters
-    class ContentSelectOption
+    class ContentField
 
-      def initialize collection
-        @collection = collection
+      def initialize entity, context
+        @entity, @context = entity, context
       end
 
-      def to_hash
-        locales = @collection.map { |option| option.name.keys }.flatten.uniq
-        options = @collection.sort { |a, b| a.position <=> b.position }
+      def select_options_to_hash
+        locales = @entity.select_options.map { |option| option.name.keys }.flatten.uniq
+        options = @entity.select_options.sort { |a, b| a.position <=> b.position }
         {}.tap do |by_locales|
           locales.each do |locale|
             options.each do |option|
