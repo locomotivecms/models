@@ -1,20 +1,10 @@
-require_relative '../entity'
-
 module Locomotive
   module Entities
-    class Site < Entity
+    class Site
+      include Locomotive::Entity
 
-      ## fields ##
-      field :name
-      field :locales
-      field :subdomain
-      field :domains
-      field :seo_title,         localized: true
-      field :meta_keywords,     localized: true
-      field :meta_description,  localized: true
-      field :robots_txt
-      field :timezone
-
+      attributes :name, :locales, :subdomain, :domains, :seo_title, 
+                 :meta_keywords, :meta_description, :robots_txt, :timezone 
       ## methods ##
 
       def to_s

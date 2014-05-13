@@ -26,5 +26,4 @@ describe Locomotive::Entity do
     its(:name) { should eq 'John' }
     its(:description) { should be_nil }    
   end
-
 end

@@ -1,12 +1,10 @@
-require_relative '../entity'
-
 module Locomotive
   module Entities
-    class Translation < Entity
+    class Translation
+      include Locomotive::Entity
 
       ## fields ##
-      field :key
-      field :values, localized: true
+      attributes :key, :values
 
     end
   end
