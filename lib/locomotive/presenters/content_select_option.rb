@@ -1,9 +1,9 @@
 module Locomotive
   module Presenters
-    class SelectOptions
-      
+    class ContentSelectOption
+
       def initialize collection
-        @collection = Array(collection)
+        @collection = collection
       end
 
       def to_hash
