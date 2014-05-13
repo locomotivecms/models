@@ -56,7 +56,23 @@ module Locomotive
         StyledYAML.dump object
       end
 
+      def method_missing method, *args, &block
+        if entity.attributes.keys.include?(method)
+          localized_attribute(method)
+        else
+          super
+        end
+      end
+
     protected
+
+      def localized_attribute(field_name)
+        if context.locale && entity.localized_field?(field_name)
+          entity.send(field_name)[context.locale]
+        else
+          entity.send(field_name)
+        end        
+      end
 
       def localized_attributes
         {}.tap do |hsh|

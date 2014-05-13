@@ -34,11 +34,6 @@ describe Locomotive::Fields do
           expect(entity.send(:_locales)).to eq([:en])
         end
       end
-      describe '#to_hash' do
-        specify do
-          expect(entity.to_hash).to eq({ 'name' => { 'en' => 'John Doe' }, 'published' => true })
-        end
-      end
     end
 
     context 'localized field defined process' do

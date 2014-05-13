@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Locomotive::Presenters::ContentField do
+describe Locomotive::Presenters::ContentField, pending: 'To Be Removed' do
 
 
   context '#to_hash' do
-    let(:content_field) { Locomotive::Entities::ContentField.new(type: 'select', select_options: select_options) }
-    let(:context) { Hash.new }
-    subject { Locomotive::Presenters::ContentField.new(content_field, context).select_options_to_hash }
+    let(:content_field) { Locomotive::Entities::ContentField.new(name: 'foo', type: 'select', select_options: select_options) }
+    let(:context) { nil }
+    subject { Locomotive::Presenters::ContentField.new(content_field, context).to_hash }
   
     context 'partially localized options' do
 

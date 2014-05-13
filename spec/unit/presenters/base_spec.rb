@@ -8,6 +8,19 @@ describe Locomotive::Presenters::Base do
     end
   end
 
+  let(:attributes) { { name: { en: 'John Doe', fr: 'Jean Daux' } } }
+  let(:entity)     { class_with_localized_field.new attributes }
+  let(:context) { nil }
+
+  describe 'presenting I18n attribute' do
+    subject { Locomotive::Presenters::Base.new(entity, context).name }
+    it { should eq en: 'John Doe', fr: 'Jean Daux' }
+    context 'when locale is set in context' do
+      let(:context) { OpenStruct.new(locale: :fr) }
+      it { should eq 'Jean Daux' }
+    end
+  end
+
   describe '#to_hash' do
     let(:entity)  { class_with_localized_field.new attributes }
     let(:context) { nil }
@@ -21,7 +34,6 @@ describe Locomotive::Presenters::Base do
     end
 
     context 'with current locale defined in context' do
-      let(:attributes) { { name: { en: 'John Doe', fr: 'Jean Daux' } } }
       let(:context) { OpenStruct.new(locale: :fr) }
       it 'flattens and returns the localized value' do
         expect(subject.to_hash).to eq 'name' => 'Jean Daux'
