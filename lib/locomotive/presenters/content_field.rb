@@ -1,3 +1,5 @@
+require_relative 'base'
+
 module Locomotive
   module Presenters
     class ContentField < Base
