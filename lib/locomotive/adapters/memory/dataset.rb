@@ -18,19 +18,19 @@ module Locomotive
         attr_reader :records, :name
 
         def initialize(name)
-          @name, @records = name, {}
-          @primary_key = PrimaryKey.new
+          @name = name
+          clear!
         end
 
-        def create(entity)
+        def create(record)
           @primary_key.increment! do |id|
-            entity[identity] = id
-            records[id] = entity
+            record[identity] = id
+            records[id] = record
           end
         end
 
-        def update(entity)
-          records[entity.id] = records[entity.id].deep_merge(entity)
+        def update(record)
+          records[record.id] = records[record.id].deep_merge(record)
         end
 
         def all
@@ -41,6 +41,10 @@ module Locomotive
           Query.new(self)
         end
 
+        def clear!
+          @records = {}
+          @primary_key = PrimaryKey.new
+        end
         private
 
         def identity
