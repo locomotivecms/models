@@ -34,6 +34,17 @@ module Locomotive
         %w(index 404).include?(fullpath)
       end
 
+      alias :index_or_not_found? :index_or_404?
+
+      def with_cache?
+        self.cache_strategy != 'none'
+      end
+
+      def default_response_type?
+        self.response_type == 'text/html'
+      end
+
+      
       # Depth of the page in the site tree.
       # Both the index and 404 pages are 0-depth.
       #
@@ -42,6 +53,10 @@ module Locomotive
       def depth
         return 0 if %w(index 404).include?(self.fullpath)
         fullpath.split('/').size
+      end
+
+      def unpublished?
+        !self.published?
       end
 
       # Modified setter in order to set correctly the slug
@@ -93,6 +108,7 @@ module Locomotive
           (base == 'index' ? _slug : File.join(base, _slug)).dasherize
         end
       end
+
 
     end
   end
