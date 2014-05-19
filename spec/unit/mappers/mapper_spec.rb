@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Locomotive::Mapper do
+describe Locomotive::Mappers::Mapper do
 
-  subject do Locomotive::Mapper.new end
+  subject do Locomotive::Mappers::Mapper.new end
 
   describe '#collection' do
 
