@@ -3,30 +3,18 @@ module Locomotive
 
     attr_reader :collections
 
-    def initialize
+    def initialize(&blk)
       @collections = {}
+      instance_eval(&blk) if block_given?
     end
 
-    def load_association! object, attribute
-      objects = Array(object)
-      # dereferencer = Dereferencer.new(mapper_registry, identity_map)
-      # dereferencer.load objects.map { |obj| obj.instance_variable_get("@#{attribute}") }
-      #
-      # objects.each do |obj|
-      #   reference = obj.instance_variable_get("@#{attribute}")
-      #   if reference.is_a? Array
-      #     refs = reference
-      #     real_objects = refs.map { |ref| dereferencer[ref] }
-      #     inject_attribute obj, attribute, real_objects
-      #   else
-      #     inject_attribute obj, attribute, dereferencer[reference]
-      #   end
-      # end
-    end
-
-
-    def collection(name)
-      @collections[name] = Mapping::Collection.new(name)
+    def collection(name, locale, &blk)
+      if block_given?
+        @collections[name] = Mapping::Collection.new(name, locale, &blk)
+      else
+        @collections[name] or raise StandardError.new
+      end
     end
   end
+
 end

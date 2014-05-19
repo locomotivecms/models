@@ -14,10 +14,16 @@ module Locomotive
           )
         end
 
+        def update(entity)
+          @dataset.update(
+            _serialize(entity)
+          )
+        end
+
         private
 
         def _serialize(entity)
-          Locomotive::Mapping::Collection.new(@collection).serialize(entity)
+          @collection.serialize(entity)
         end
       end
     end

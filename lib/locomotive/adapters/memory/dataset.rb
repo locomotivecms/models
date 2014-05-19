@@ -4,26 +4,37 @@ module Locomotive
 
       class Dataset
 
-        include Enumerable
-        extend  Forwardable
+        class PrimaryKey
+          def initialize
+            @current = 0
+          end
 
-        def_delegators :all, :each, :to_s, :empty?, :size
-        def_delegators :query, :where, :order_by, :limit, :offset
-
-        def initialize(loader)
-          @loader  = loader
+          def increment!
+            yield(@current += 1)
+            @current
+          end
         end
 
-        def each(&block)
-          dataset.each(&block)
+        attr_reader :records, :name
+
+        def initialize(name)
+          @name, @records = name, {}
+          @primary_key = PrimaryKey.new
         end
 
         def create(entity)
-          all << entity
+          @primary_key.increment! do |id|
+            entity[identity] = id
+            records[id] = entity
+          end
+        end
+
+        def update(entity)
+          records[entity.id] = records[entity.id].deep_merge(entity)
         end
 
         def all
-          dataset
+          records.values
         end
 
         def query
@@ -32,12 +43,11 @@ module Locomotive
 
         private
 
-        def dataset
-          @dataset ||= @loader.to_a
+        def identity
+          @identity ||= :id
         end
 
       end
-
     end
   end
 end

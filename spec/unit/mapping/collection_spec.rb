@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Mapping::Collection do
+describe Locomotive::Mapping::Collection, pending: true do
 
   subject do Locomotive::Mapping::Collection.new(:site) end
 

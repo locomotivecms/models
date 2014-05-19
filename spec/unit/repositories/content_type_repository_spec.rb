@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Repositories::ContentTypeRepository do
+describe Locomotive::Repositories::ContentTypeRepository, pending: true do
   let(:datastore)  { Locomotive::Datastore.new }
   let(:adapter)    { Locomotive::Adapters::MemoryAdapter.new }
   let(:repository) { Locomotive::Repositories::ContentTypeRepository.new(datastore, adapter) }

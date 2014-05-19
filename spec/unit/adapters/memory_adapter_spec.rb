@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Adapters::MemoryAdapter do
+describe Locomotive::Adapters::MemoryAdapter, pending: true do
   let(:loader)  { nil }
   let(:adapter) { Locomotive::Adapters::MemoryAdapter.new(loader) }
 

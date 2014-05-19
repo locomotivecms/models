@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Adapters::Memory::Dataset do
+describe Locomotive::Adapters::Memory::Dataset, pending: true do
 
 
   let(:john) {
