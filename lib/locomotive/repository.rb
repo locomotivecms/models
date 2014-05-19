@@ -21,7 +21,7 @@ module Locomotive
     end
 
     def find(slug)
-      @adapter.find(collection, slug)
+      @adapter.find(collection, slug, locale)
     end
 
     def query(&block)
@@ -29,7 +29,11 @@ module Locomotive
     end
 
     def create entity, locale
-      @adapter.create(collection, entity, locale)
+      entity.id = @adapter.create(collection, entity, locale)
+    end
+
+    def update entity, locale
+      @adapter.update(collection, entity, locale)
     end
 
     def collection

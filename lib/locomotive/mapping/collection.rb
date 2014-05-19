@@ -24,10 +24,12 @@ module Locomotive
       end
 
       def serialize(record)
+
         @coercer.to_record(record)
       end
 
       def deserialize(records)
+        
         records.map do |record|
           @coercer.from_record(record)
         end

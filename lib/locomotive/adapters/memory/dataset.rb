@@ -30,11 +30,15 @@ module Locomotive
         end
 
         def update(record)
-          records[record.id] = records[record.id].deep_merge(record)
+          records[record[identity]] = records[record[identity]].deep_merge(record)
         end
 
         def all
           records.values
+        end
+
+        def find id
+          records[id]
         end
 
         def query

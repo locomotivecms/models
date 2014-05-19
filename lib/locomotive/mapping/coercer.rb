@@ -8,6 +8,7 @@ module Locomotive
 
       def to_record(entity)
         {}.tap do |_attributes|
+          _attributes[:id] = entity.id
           @collection.attributes.each do |name, options|
             if options[:localized]
               _attributes[name] = { @collection.locale => entity.send(name) }
@@ -19,8 +20,11 @@ module Locomotive
       end
 
       def from_record(record)
-        _entity = @collection.entity.new
+
+        _entity = @collection.entity.new(id: record[:id])
+
         @collection.attributes.each do |name, options|
+          
           if options[:localized]
             _entity.send(:"#{name}=", record[name][@collection.locale])
           else

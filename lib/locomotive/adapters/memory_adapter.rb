@@ -23,6 +23,10 @@ module Locomotive
         Memory::Command.new(dataset(collection), _mapped_collection(collection, locale)).create(entity)
       end
 
+      def update(collection, entity, locale)
+        Memory::Command.new(dataset(collection), _mapped_collection(collection, locale)).update(entity)
+      end
+
       def first(collection)
         dataset(collection).first
       end
@@ -37,6 +41,14 @@ module Locomotive
 
       def query(collection, &block)
         Memory::Query.new(dataset(collection), &block)
+      end
+
+        # TODO move to query
+      def find(collection, id, locale)
+        
+        record = dataset(collection).find(id)
+        
+        _mapped_collection(collection, locale).deserialize([record]).first
       end
 
       private
