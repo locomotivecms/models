@@ -10,7 +10,10 @@ module Locomotive
     end
   end
 
+
   describe '' do
+    let(:entity) { Entities::Dummy.new({name: 'John Doe'}) }
+    
     let(:repository) do
       class DummyRepository
         include Repository
@@ -30,11 +33,42 @@ module Locomotive
 
     describe 'write an entity' do
       before do
-        repository.create(Entities::Dummy.new({name: 'John Doe'}), locale)
+        repository.create(entity, locale)
       end
       specify do
         expect(repository.all(locale).size).to eq(1)
       end
+      it 'gives an ID to the entity' do
+        entity.id.should_not be_nil        
+      end
     end
+
+    describe 'finding an entity by its ID' do
+      context 'when entity exists' do
+        before  { repository.create(entity, locale) }
+        subject { repository.find(entity.id) }
+
+        it { should be_kind_of Entities::Dummy }
+        its(:id) { should_not be_nil }
+      end
+
+      context 'when entity could not be found' do
+      end
+    end
+
+    describe 'update an entity' do
+      before do
+        repository.create(entity, locale)
+        entity.name= 'Jane Doe'
+        repository.update(entity, locale)
+      end
+
+      it 'does not create a new record' do
+        expect(repository.all(locale).size).to eq(1)
+      end
+
+
+    end
+
   end
 end
