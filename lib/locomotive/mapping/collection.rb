@@ -2,29 +2,35 @@ module Locomotive
   module Mapping
     class Collection
 
-      attr_accessor :entity
+      attr_reader :locale, :attributes
 
-      def initialize name
-        self.entity = eval("Locomotive::Entities::#{constantize(name)}")
+      def initialize entity, locale, &blk
+        @coercer = Coercer.new(self)
+        @locale = locale
+        @attributes = {}
+        instance_eval(&blk) if block_given?
+      end
+
+      def entity(klass = nil)
+        if klass
+          @entity = klass
+        else
+          @entity
+        end
+      end
+
+      def attribute(name, options = {})
+        @attributes[name] = options
       end
 
       def serialize(record)
-        record.to_record
+        @coercer.to_record(record)
       end
 
       def deserialize(records)
         records.map do |record|
-          entity.from_record(record)
+          @coercer.from_record(record)
         end
-      end
-
-      private
-
-      def constantize name
-        { site: 'Site',
-          content_type: 'ContentType',
-          content_entry: 'ContentEntry'
-        }[name]
       end
 
     end

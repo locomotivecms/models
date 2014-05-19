@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Datastore do
+describe Locomotive::Datastore, pending: true do
 
   let(:path)      { File.expand_path('../../fixtures/default', __FILE__) }
   let(:loader)    { Locomotive::Adapters::Memory::YamlLoader.new(path) }

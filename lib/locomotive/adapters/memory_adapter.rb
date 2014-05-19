@@ -10,17 +10,17 @@ module Locomotive
 
     class MemoryAdapter
 
-      def initialize(loader = nil)
-        @loader   = loader || Memory::EmptyLoader.new
-        @datasets = Hash.new { |hash, name| hash[name] = Memory::Dataset.new(@loader.get(name)) }
+      def initialize mapper
+        @mapper = mapper
+        @datasets = Hash.new { |hash, name| hash[name] = Memory::Dataset.new(name) }
       end
 
-      def all(collection)
-        Locomotive::Mapping::Collection.new(collection).deserialize(dataset(collection).all)
+      def all(collection, locale)
+        _mapped_collection(collection, locale).deserialize(dataset(collection).all)
       end
 
-      def create(collection, entity)
-        Memory::Command.new(dataset(collection), collection).create(entity)
+      def create(collection, entity, locale)
+        Memory::Command.new(dataset(collection), _mapped_collection(collection, locale)).create(entity)
       end
 
       def first(collection)
@@ -43,6 +43,10 @@ module Locomotive
 
       def dataset(collection)
         @datasets[collection]
+      end
+
+      def _mapped_collection(name, locale)
+        @mapper.collection(name, locale)
       end
 
     end
