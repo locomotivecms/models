@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Locomotive::Adapters::Memory::Command do
+describe Locomotive::Adapters::Memory::Command, pending: true do
   let(:loader)     { double(to_a: []) }
   let(:dataset)    { Locomotive::Adapters::Memory::Dataset.new(loader) }
   let(:collection) { :site }
