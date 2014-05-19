@@ -53,6 +53,10 @@ module Locomotive
       end
 
       context 'when entity could not be found' do
+        subject { repository.find(1234) }
+        it 'raises an error' do
+          expect { subject }.to raise_error Repository::RecordNotFound, 'could not find dummy with id = 1234'
+        end
       end
     end
 

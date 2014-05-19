@@ -42,7 +42,7 @@ module Locomotive
         end
 
         def find id
-          records[id]
+          records.fetch(id) { raise Locomotive::Repository::RecordNotFound, "could not find #{name} with #{identity} = #{id}" }
         end
 
         def query
