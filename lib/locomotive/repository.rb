@@ -36,6 +36,10 @@ module Locomotive
       @adapter.update(collection, entity, locale)
     end
 
+    def destroy entity
+      @adapter.destroy(collection, entity)
+    end
+
     def collection
       # TODO: mapper will go here
       self.class.name.split("::").last.sub(/Repository$/, '').scan(/[A-Z][a-z]*/).join("_").downcase.to_sym

@@ -17,6 +17,7 @@ module Locomotive
 
       def all(collection, locale)
         _mapped_collection(collection, locale).deserialize(dataset(collection).all)
+
       end
 
       def create(collection, entity, locale)
@@ -25,6 +26,10 @@ module Locomotive
 
       def update(collection, entity, locale)
         Memory::Command.new(dataset(collection), _mapped_collection(collection, locale)).update(entity)
+      end
+
+      def destroy(collection, entity)
+        Memory::Command.new(dataset(collection), collection).destroy(entity)
       end
 
       def first(collection)

@@ -66,9 +66,15 @@ module Locomotive
       it 'does not create a new record' do
         expect(repository.all(locale).size).to eq(1)
       end
-
-
     end
 
+    describe 'destroying an entity' do
+      before  { repository.create(entity, locale) }
+      it 'destroys an entry' do
+        repository.destroy(entity)
+        expect(repository.all(locale).size).to eq(0)
+      end
+
+    end
   end
 end

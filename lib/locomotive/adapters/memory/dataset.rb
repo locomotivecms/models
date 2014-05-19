@@ -22,7 +22,7 @@ module Locomotive
           clear!
         end
 
-        def create(record)
+        def insert(record)
           @primary_key.increment! do |id|
             record[identity] = id
             records[id] = record
@@ -31,6 +31,10 @@ module Locomotive
 
         def update(record)
           records[record[identity]] = records[record[identity]].deep_merge(record)
+        end
+
+        def delete(id)
+          records.delete(id)
         end
 
         def all
