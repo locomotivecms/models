@@ -2,6 +2,8 @@ module Locomotive
 
   module Repository
 
+    class RecordNotFound < StandardError; end
+
     def initialize(datastore, adapter, _locale)
       @datastore  = datastore
       @adapter    = adapter
@@ -34,6 +36,10 @@ module Locomotive
 
     def update entity, locale
       @adapter.update(collection, entity, locale)
+    end
+
+    def destroy entity
+      @adapter.destroy(collection, entity)
     end
 
     def collection
