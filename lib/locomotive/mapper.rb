@@ -5,7 +5,7 @@ module Locomotive
     class << self
       def load!(file)
         self.new do
-          instance_eval File.read(file)
+          instance_eval File.read(file), file
         end
       end
     end
