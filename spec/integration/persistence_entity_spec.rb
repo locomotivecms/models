@@ -17,14 +17,14 @@ module Locomotive
     let(:repository) do
       class DummyRepository
         include Repository
-      end.new(datastore, adapter, locale)
+      end.new(datastore, adapter)
     end
     let(:datastore) { Locomotive::Datastore.new }
     let(:adapter)   { Locomotive::Adapters::MemoryAdapter.new(mapper) }
     let(:locale)    { :en }
     let(:mapper) do
       Locomotive::Mapper.new do
-        collection :dummy, :en do
+        collection :dummy do
           entity Entities::Dummy
           attribute :name, localized: true
         end
@@ -46,14 +46,14 @@ module Locomotive
     describe 'finding an entity by its ID' do
       context 'when entity exists' do
         before  { repository.create(entity, locale) }
-        subject { repository.find(entity.id) }
+        subject { repository.find(entity.id, locale) }
 
         it { should be_kind_of Entities::Dummy }
         its(:id) { should_not be_nil }
       end
 
       context 'when entity could not be found' do
-        subject { repository.find(1234) }
+        subject { repository.find(1234, :en) }
         it 'raises an error' do
           expect { subject }.to raise_error Repository::RecordNotFound, 'could not find dummy with id = 1234'
         end
