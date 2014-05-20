@@ -8,22 +8,22 @@ module Locomotive
           @dataset, @collection = dataset, collection
         end
 
-        def create(entity)
+        def create(entity, locale)
           @dataset.create(
-            _serialize(entity)
+            _serialize(entity, locale)
           )
         end
 
-        def update(entity)
+        def update(entity, locale)
           @dataset.update(
-            _serialize(entity)
+            _serialize(entity, locale)
           )
         end
 
         private
 
-        def _serialize(entity)
-          @collection.serialize(entity)
+        def _serialize(entity, locale)
+          @collection.serialize(entity, locale)
         end
       end
     end

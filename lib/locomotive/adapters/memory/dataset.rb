@@ -37,7 +37,8 @@ module Locomotive
           records.values
         end
 
-        def find id
+        # memory adapter dont care about locale, it returns the whole record hash.
+        def find id, locale
           records[id]
         end
 
