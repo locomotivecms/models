@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Locomotive::Datastore, pending: true do
+describe Locomotive::Datastore do
 
-  let(:datastore) { Locomotive::Datastore.new(attr1: 42, attr2: 'Lorem ipsum') }
+  let(:datastore) { Locomotive::Datastore.new }
 
   describe 'mounting point' do
 
@@ -16,6 +16,22 @@ describe Locomotive::Datastore, pending: true do
       subject.site.should eq nil
     end
 
+  end
+
+  describe 'options' do
+    context 'setting custom mapper' do
+      subject { Locomotive::Datastore.new(mapper: 'a custom mapper') }
+      it 'uses the mapper from options' do
+        subject.mapper.should eq 'a custom mapper'
+      end
+    end
+    context 'default mapper' do
+      subject { Locomotive::Datastore.new }
+
+      it 'uses the built in mapper' do
+        subject.mapper.collection(:site).should_not be_nil
+      end
+    end
   end
 
 end

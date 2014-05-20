@@ -1,0 +1,3 @@
+collection :site do
+
+end
