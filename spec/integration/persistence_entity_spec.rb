@@ -53,6 +53,10 @@ module Locomotive
       end
 
       context 'when entity could not be found' do
+        subject { repository.find(1234, :en) }
+        it 'raises an error' do
+          expect { subject }.to raise_error Repository::RecordNotFound, 'could not find dummy with id = 1234'
+        end
       end
     end
 
@@ -66,9 +70,15 @@ module Locomotive
       it 'does not create a new record' do
         expect(repository.all(locale).size).to eq(1)
       end
-
-
     end
 
+    describe 'destroying an entity' do
+      before  { repository.create(entity, locale) }
+      it 'destroys an entry' do
+        repository.destroy(entity)
+        expect(repository.all(locale).size).to eq(0)
+      end
+
+    end
   end
 end

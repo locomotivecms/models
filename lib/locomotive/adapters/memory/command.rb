@@ -9,7 +9,7 @@ module Locomotive
         end
 
         def create(entity, locale)
-          @dataset.create(
+          @dataset.insert(
             _serialize(entity, locale)
           )
         end
@@ -18,6 +18,10 @@ module Locomotive
           @dataset.update(
             _serialize(entity, locale)
           )
+        end
+
+        def destroy(entity)
+          @dataset.delete(entity.id)
         end
 
         private

@@ -27,6 +27,10 @@ module Locomotive
         Memory::Command.new(dataset(collection), _mapped_collection(collection)).update(entity, locale)
       end
 
+      def destroy(collection, entity)
+        Memory::Command.new(dataset(collection), collection).destroy(entity)
+      end
+
       def first(collection)
         dataset(collection).first
       end
