@@ -45,7 +45,6 @@ module Locomotive
         Memory::Query.new(dataset(collection), &block)
       end
 
-        # TODO move to query
       def find(collection, id, locale)
         record = dataset(collection).find(id, locale)
         _mapped_collection(collection).deserialize([record], locale).first

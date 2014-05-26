@@ -2,39 +2,33 @@ require 'spec_helper'
 
 module Locomotive
 
-  module Entities
-    class Dummy
-      include Entity
-      attributes :name
-    end
-  end
-
   describe '' do
-    let(:entity) { Entities::Dummy.new({name: 'John Doe'}) }
+    include_context 'memory'
 
-    let(:repository) do
-      class DummyRepository
-        include Repository
-      end.new(datastore, adapter)
-    end
-    let(:datastore) { Locomotive::Datastore.new }
-    let(:adapter)   { Locomotive::Adapters::MemoryAdapter.new(mapper) }
+    let(:entity)  { Entities::Article.new(record) }
+    let(:record)  {{ title: 'new article', content: 'nothing has changed' }}
+    let(:records) {[ record ]}
     let(:locale)    { :en }
-    let(:mapper) do
-      Locomotive::Mapper.new do
-        collection :dummy do
-          entity Entities::Dummy
-          attribute :name, localized: true
-        end
+
+    describe '' do
+      let(:records) do
+        [ { title: 'new article', content: 'nothing has changed' },
+          { title: 'new article', content: 'nothing has changed' }]
+      end
+
+      before do fill_articles! end
+
+      specify do
+        expect(articles_repository.all(locale).size).to eq(2)
       end
     end
 
     describe 'write an entity' do
       before do
-        repository.create(entity, locale)
+        articles_repository.create(entity, locale)
       end
       specify do
-        expect(repository.all(locale).size).to eq(1)
+        expect(articles_repository.all(locale).size).to eq(1)
       end
       it 'gives an ID to the entity' do
         entity.id.should_not be_nil
@@ -43,38 +37,38 @@ module Locomotive
 
     describe 'finding an entity by its ID' do
       context 'when entity exists' do
-        before  { repository.create(entity, locale) }
-        subject { repository.find(entity.id, locale) }
+        before  { articles_repository.create(entity, locale) }
+        subject { articles_repository.find(entity.id, locale) }
 
-        it { should be_kind_of Entities::Dummy }
+        it { should be_kind_of Entities::Article }
         its(:id) { should_not be_nil }
       end
 
       context 'when entity could not be found' do
-        subject { repository.find(1234, :en) }
+        subject { articles_repository.find(1234, :en) }
         it 'raises an error' do
-          expect { subject }.to raise_error Repository::RecordNotFound, 'could not find dummy with id = 1234'
+          expect { subject }.to raise_error Repository::RecordNotFound, 'could not find articles with id = 1234'
         end
       end
     end
 
     describe 'update an entity' do
       before do
-        repository.create(entity, locale)
-        entity.name= 'Jane Doe'
-        repository.update(entity, locale)
+        articles_repository.create(entity, locale)
+        entity.title= 'Jane Doe'
+        articles_repository.update(entity, locale)
       end
 
       it 'does not create a new record' do
-        expect(repository.all(locale).size).to eq(1)
+        expect(articles_repository.all(locale).size).to eq(1)
       end
     end
 
     describe 'destroying an entity' do
-      before  { repository.create(entity, locale) }
+      before  { articles_repository.create(entity, locale) }
       it 'destroys an entry' do
-        repository.destroy(entity)
-        expect(repository.all(locale).size).to eq(0)
+        articles_repository.destroy(entity)
+        expect(articles_repository.all(locale).size).to eq(0)
       end
     end
   end

@@ -1,27 +1,36 @@
-module Locomotive
-  module Entities
-    class Article
-      include Entity
+RSpec.shared_context 'memory' do
+  let(:datastore) do
+    Locomotive::Datastore.new
+  end
 
-      attributes :title
-      attributes :content
+  let(:article_mapper) do
+    mapper = Locomotive::Mapper.new do
+      collection :articles do
+        entity Locomotive::Entities::Article
+        attribute :title,   klass: String, localized: true
+        attribute :content, klass: String
+      end
+    end
+    mapper.load!
+    mapper
+  end
+
+  let(:adapter) do
+    Locomotive::Adapters::MemoryAdapter.new article_mapper
+  end
+
+  let(:articles_repository) do
+    Locomotive::ArticlesRepository.new(datastore, adapter)
+  end
+
+  let(:records) do
+    [{ title: 'new article', content: 'nothing has changed' }]
+  end
+
+  def fill_articles!
+
+    records.each do |record|
+      articles_repository.create(Locomotive::Entities::Article.new(record), :en)
     end
   end
 end
-
-@mapper = Locomotive::Mapper.new do
-  collection :article do
-    entity Locomotive::Entities::Article
-    attribute :title, localized: true
-    attribute :content
-  end
-end
-
-@datastore = Locomotive::Datastore.new
-@adapter   = Locomotive::Adapters::MemoryAdapter.new @mapper
-
-class Locomotive::ArticleRepository
-  include Locomotive::Repository
-end
-
-@repository = Locomotive::ArticleRepository.new(@datastore, @adapter)
