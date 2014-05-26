@@ -21,7 +21,7 @@ module Locomotive
       if block_given?
         @collections[name] = Mapping::Collection.new(name, &blk)
       else
-        @collections[name] or raise UnknownCollection
+        @collections[name] or raise UnknownCollection, "#{name} collection does not exist"
       end
     end
   end
