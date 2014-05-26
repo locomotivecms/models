@@ -29,6 +29,19 @@ module Locomotive
       end
     end
 
+    describe 'memory' do
+      include_context 'memory'
+
+      before do
+        fill_articles!
+      end
+
+      specify do
+        expect(article_repository.all(locale).size).to eq(1)
+      end
+    end
+
+
     describe 'write an entity' do
       before do
         repository.create(entity, locale)
