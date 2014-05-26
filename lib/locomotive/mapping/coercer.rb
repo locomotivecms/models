@@ -20,15 +20,18 @@ module Locomotive
       end
 
       def from_record(record, locale)
-
         _entity = @collection.entity.new(id: record[:id])
 
         @collection.attributes.each do |name, options|
-          
-          if options[:localized]
-            _entity.send(:"#{name}=", record[name][locale])
+          value = if options[:localized]
+            record[name][locale]
           else
-            _entity.send(:"#{name}=", record[name])
+            record[name]
+          end
+          if (klass = options.fetch(:klass, nil))
+            _entity.send(:"#{name}=", klass.new(value))
+          else
+            _entity.send(:"#{name}=", value)
           end
         end
         _entity

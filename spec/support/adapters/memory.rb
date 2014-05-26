@@ -4,21 +4,23 @@ RSpec.shared_context 'memory' do
   end
 
   let(:article_mapper) do
-    Locomotive::Mapper.new do
-      collection :article do
+    mapper = Locomotive::Mapper.new do
+      collection :articles do
         entity Locomotive::Entities::Article
-        attribute :title, localized: true
-        attribute :content
+        attribute :title,   klass: String, localized: true
+        attribute :content, klass: String
       end
     end
+    mapper.load!
+    mapper
   end
 
   let(:adapter) do
     Locomotive::Adapters::MemoryAdapter.new article_mapper
   end
 
-  let(:article_repository) do
-    Locomotive::ArticleRepository.new(datastore, adapter)
+  let(:articles_repository) do
+    Locomotive::ArticlesRepository.new(datastore, adapter)
   end
 
   let(:records) do
@@ -26,8 +28,9 @@ RSpec.shared_context 'memory' do
   end
 
   def fill_articles!
+
     records.each do |record|
-      article_repository.create(Locomotive::Entities::Article.new(record), :en)
+      articles_repository.create(Locomotive::Entities::Article.new(record), :en)
     end
   end
 end

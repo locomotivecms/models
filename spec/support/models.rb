@@ -9,6 +9,6 @@ module Locomotive
   end
 end
 
-class Locomotive::ArticleRepository
+class Locomotive::ArticlesRepository
   include Locomotive::Repository
 end

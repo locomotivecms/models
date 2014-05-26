@@ -9,11 +9,11 @@ module Locomotive
       before do fill_articles! end
 
       it 'gets an empty set of sites' do
-        adapter.size(:article).should eq 1
+        adapter.size(:articles).should eq 1
       end
 
       it '' do
-        adapter.find(:article, 1, :en).should be_a(Entities::Article)
+        adapter.find(:articles, 1, :en).should be_a(Entities::Article)
       end
 
     end

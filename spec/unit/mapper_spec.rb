@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'fixtures/example_entities'
 
-describe Locomotive::Mapper do 
+describe Locomotive::Mapper do
   describe '#collection' do
     subject { Locomotive::Mapper.new }
-    
+
     context 'setting a collection' do
       it 'creates a collection' do
         subject.collection(:new_collection) {}
@@ -17,7 +17,7 @@ describe Locomotive::Mapper do
         it 'raises an error' do
           expect {
             subject.collection(:foo)
-          }.to raise_error Locomotive::Mapper::UnknownCollection
+          }.to raise_error Locomotive::Mapping::UnmappedCollectionError
         end
       end
 
@@ -33,10 +33,10 @@ describe Locomotive::Mapper do
 
   describe '#load' do
     let(:file) { File.expand_path('../../fixtures/example_mapper.rb', __FILE__) }
-    subject { Locomotive::Mapper.load! file }
+    subject { Locomotive::Mapper.load_from_file! file }
 
     it { should be_an_instance_of(Locomotive::Mapper) }
-    
+
     it 'loads the collections' do
       subject.collections.size.should eq 2
       subject.collection(:article).should be_an_instance_of Locomotive::Mapping::Collection
