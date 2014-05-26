@@ -2,8 +2,6 @@ require_relative 'memory/dataset'
 require_relative 'memory/condition'
 require_relative 'memory/query'
 require_relative 'memory/command'
-require_relative 'memory/empty_loader'
-require_relative 'memory/yaml_loader'
 
 module Locomotive
   module Adapters
@@ -49,11 +47,10 @@ module Locomotive
 
         # TODO move to query
       def find(collection, id, locale)
-        
         record = dataset(collection).find(id, locale)
-        
         _mapped_collection(collection).deserialize([record], locale).first
       end
+
 
       private
 
@@ -66,6 +63,5 @@ module Locomotive
       end
 
     end
-
   end
 end
