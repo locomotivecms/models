@@ -49,12 +49,12 @@ module Locomotive
           @records = {}
           @primary_key = PrimaryKey.new
         end
+
         private
 
         def identity
           @identity ||= :id
         end
-
       end
     end
   end

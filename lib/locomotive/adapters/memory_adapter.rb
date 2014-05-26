@@ -45,9 +45,7 @@ module Locomotive
 
         # TODO move to query
       def find(collection, id, locale)
-        
         record = dataset(collection).find(id)
-        
         _mapped_collection(collection, locale).deserialize([record]).first
       end
 

@@ -15,7 +15,5 @@ describe Locomotive::Datastore, pending: true do
     it 'gets a site' do
       subject.site.should eq nil
     end
-
   end
-
 end

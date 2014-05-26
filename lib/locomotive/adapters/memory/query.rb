@@ -8,6 +8,7 @@ module Locomotive
         extend  Forwardable
 
         def_delegators :all, :each, :to_s, :to_a, :empty?, :size
+
         alias :length :size
         alias :count :size
 
@@ -87,11 +88,9 @@ module Locomotive
             end
             accepted
           end
-
-        end
+        end # filtered
 
       end
-
     end
   end
 end
