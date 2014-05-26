@@ -7,6 +7,7 @@ RSpec.shared_context 'memory' do
     mapper = Locomotive::Mapper.new do
       collection :articles do
         entity Locomotive::Entities::Article
+        
         attribute :title,   klass: String, localized: true
         attribute :content, klass: String
       end
