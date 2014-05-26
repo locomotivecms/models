@@ -1,23 +1,21 @@
-collection :product do
+collection :products do
 
-  entity ExampleEntities::Product
+  entity Locomotive::Example::Product
 
   attribute :title, localized: true
   attribute :price
 end
 
-collection :article do
-
-  entity ExampleEntities::Article
+collection :articles do
+  entity Locomotive::Example::Article
 
   attribute :title,   localized: true
   attribute :content, localized: true
   attribute :author,  association: true
 end
 
-collection :author do
-
-  entity ExampleEntities::Author
+collection :authors do
+  entity Locomotive::Example::Author
 
   attribute :name
 

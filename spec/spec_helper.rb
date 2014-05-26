@@ -12,8 +12,8 @@ require_relative '../lib/locomotive_models'
 
 ENV['ADAPTER'] ||= 'memory'
 
+load File.dirname(__FILE__) + '/support/models.rb'
 load File.dirname(__FILE__) + "/support/adapters/#{ENV['ADAPTER']}.rb"
-load File.dirname(__FILE__) + '/support/data.rb'
 
 RSpec.configure do |config|
   config.filter_run focused: true

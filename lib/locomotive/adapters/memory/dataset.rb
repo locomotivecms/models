@@ -37,6 +37,10 @@ module Locomotive
           records.delete(id)
         end
 
+        def size
+          records.size
+        end
+
         def all
           records.values
         end

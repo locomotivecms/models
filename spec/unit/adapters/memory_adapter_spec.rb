@@ -1,23 +1,21 @@
 require 'spec_helper'
 
-describe Locomotive::Adapters::MemoryAdapter, pending: true do
-  let(:adapter)   { Locomotive::Adapters::MemoryAdapter.new(mapper) }
+module Locomotive
+  describe Adapters::MemoryAdapter do
+    include_context 'memory'
 
-  let(:mapper) do
-    Locomotive::Mapper.new do
-      collection :dummy, :en do
-        entity Entities::Dummy
-        attribute :name, localized: true
+    context 'with no loader' do
+
+      before do fill_articles! end
+
+      it 'gets an empty set of sites' do
+        adapter.size(:articles).should eq 1
       end
-    end
-  end
 
-  subject { adapter }
+      it '' do
+        adapter.find(:articles, 1, :en).should be_a(Example::Article)
+      end
 
-  context 'with no loader' do
-
-    it 'gets an empty set of sites' do
-      subject.size(:site).should eq 0
     end
   end
 
