@@ -20,6 +20,5 @@ collection :author do
   entity ExampleEntities::Author
 
   attribute :name
-  attribute :articles, association: true
 
 end

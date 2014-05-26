@@ -6,7 +6,7 @@ module ExampleEntities
 
   class Author
     include Locomotive::Entity
-    attributes :name, :articles
+    attributes :name
   end
 
   class Product

@@ -37,6 +37,11 @@ module Locomotive
       @adapter.destroy(collection, entity)
     end
 
+    def load_association entity, association_name
+      placeholder = entity.send(:"#{association_name}")
+      placeholder.repository = self
+    end
+
     def collection
       self.class.name.split("::").last.sub(/Repository\Z/, '').scan(/[A-Z][a-z]*/).join("_").downcase.to_sym
     end

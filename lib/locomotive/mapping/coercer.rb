@@ -30,7 +30,10 @@ module Locomotive
           if options[:localized]
             _entity.send(:"#{name}=", record[name][locale])
           elsif options[:association]
-            _entity.send(:"#{name}=", AssociationPlaceholder.new(name, record[:"#{name}_id"], locale))
+            association = AssociationPlaceholder.new(record[:"#{name}_id"], locale) do |associated_object|
+              _entity.send(:"#{name}=", associated_object)
+            end
+            _entity.send(:"#{name}=", association)
           else
             _entity.send(:"#{name}=", record[name])
           end

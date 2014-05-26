@@ -43,6 +43,14 @@ module Locomotive
           article_double = article_repository.find(article.id, :en)
           article_double.author.id.should eql author.id
         end
+
+        it 'Lazily loads the associated record' do
+          article_double = article_repository.find(article.id, :en)
+          author_repository.load_association article_double, :author
+          article_double.author.name.should eq 'John'
+          article_double.author.should be_kind_of ExampleEntities::Author
+        end
+
       end
     end
   end
