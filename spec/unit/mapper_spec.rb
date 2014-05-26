@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'fixtures/example_entities'
 
-describe Locomotive::Mapper do 
+describe Locomotive::Mapper do
   describe '#collection' do
     subject { Locomotive::Mapper.new }
-    
+
     context 'setting a collection' do
       it 'creates a collection' do
         subject.collection(:new_collection) {}
@@ -36,9 +36,9 @@ describe Locomotive::Mapper do
     subject { Locomotive::Mapper.load! file }
 
     it { should be_an_instance_of(Locomotive::Mapper) }
-    
+
     it 'loads the collections' do
-      subject.collections.size.should eq 2
+      subject.collections.size.should eq 3
       subject.collection(:article).should be_an_instance_of Locomotive::Mapping::Collection
     end
   end
