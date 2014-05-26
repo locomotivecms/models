@@ -22,7 +22,7 @@ module Locomotive
           clear!
         end
 
-        def create(record)
+        def insert(record)
           @primary_key.increment! do |id|
             record[identity] = id
             records[id] = record
@@ -33,12 +33,16 @@ module Locomotive
           records[record[identity]] = records[record[identity]].deep_merge(record)
         end
 
+        def delete(id)
+          records.delete(id)
+        end
+
         def all
           records.values
         end
 
-        def find id
-          records[id]
+        def find id, locale
+          records.fetch(id) { raise Locomotive::Repository::RecordNotFound, "could not find #{name} with #{identity} = #{id}" }
         end
 
         def query

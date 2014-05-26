@@ -2,26 +2,19 @@ module Locomotive
 
   module Repository
 
-    def initialize(datastore, adapter, _locale)
+    class RecordNotFound < StandardError; end
+
+    def initialize(datastore, adapter)
       @datastore  = datastore
       @adapter    = adapter
-      self.locale = _locale
-    end
-
-    def locale
-      @locale
-    end
-
-    def locale= locale
-      @locale = locale
     end
 
     def all(locale)
       @adapter.all(collection, locale)
     end
 
-    def find(slug)
-      @adapter.find(collection, slug, locale)
+    def find(id, locale)
+      @adapter.find(collection, id, locale)
     end
 
     def query(&block)
@@ -36,9 +29,12 @@ module Locomotive
       @adapter.update(collection, entity, locale)
     end
 
+    def destroy entity
+      @adapter.destroy(collection, entity)
+    end
+
     def collection
-      # TODO: mapper will go here
-      self.class.name.split("::").last.sub(/Repository$/, '').scan(/[A-Z][a-z]*/).join("_").downcase.to_sym
+      self.class.name.split("::").last.sub(/Repository\Z/, '').scan(/[A-Z][a-z]*/).join("_").downcase.to_sym
     end
   end
 end

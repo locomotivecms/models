@@ -2,11 +2,10 @@ module Locomotive
   module Mapping
     class Collection
 
-      attr_reader :locale, :attributes
+      attr_reader :attributes
 
-      def initialize entity, locale, &blk
+      def initialize entity, &blk
         @coercer = Coercer.new(self)
-        @locale = locale
         @attributes = {}
         instance_eval(&blk) if block_given?
       end
@@ -23,15 +22,15 @@ module Locomotive
         @attributes[name] = options
       end
 
-      def serialize(record)
+      def serialize(record, locale)
 
-        @coercer.to_record(record)
+        @coercer.to_record(record, locale)
       end
 
-      def deserialize(records)
+      def deserialize(records, locale)
         
         records.map do |record|
-          @coercer.from_record(record)
+          @coercer.from_record(record, locale)
         end
       end
 

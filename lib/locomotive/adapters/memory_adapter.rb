@@ -14,15 +14,19 @@ module Locomotive
       end
 
       def all(collection, locale)
-        _mapped_collection(collection, locale).deserialize(dataset(collection).all)
+        _mapped_collection(collection).deserialize(dataset(collection).all, locale)
       end
 
       def create(collection, entity, locale)
-        Memory::Command.new(dataset(collection), _mapped_collection(collection, locale)).create(entity)
+        Memory::Command.new(dataset(collection), _mapped_collection(collection)).create(entity, locale)
       end
 
       def update(collection, entity, locale)
-        Memory::Command.new(dataset(collection), _mapped_collection(collection, locale)).update(entity)
+        Memory::Command.new(dataset(collection), _mapped_collection(collection)).update(entity, locale)
+      end
+
+      def destroy(collection, entity)
+        Memory::Command.new(dataset(collection), collection).destroy(entity)
       end
 
       def first(collection)
@@ -43,9 +47,10 @@ module Locomotive
 
         # TODO move to query
       def find(collection, id, locale)
-        record = dataset(collection).find(id)
-        _mapped_collection(collection, locale).deserialize([record]).first
+        record = dataset(collection).find(id, locale)
+        _mapped_collection(collection).deserialize([record], locale).first
       end
+
 
       private
 
@@ -53,11 +58,10 @@ module Locomotive
         @datasets[collection]
       end
 
-      def _mapped_collection(name, locale)
-        @mapper.collection(name, locale)
+      def _mapped_collection(name)
+        @mapper.collection(name)
       end
 
     end
-
   end
 end

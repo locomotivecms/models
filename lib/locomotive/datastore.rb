@@ -13,9 +13,16 @@ module Locomotive
     end
 
     def default_adapter
-      @default_adapter ||= Locomotive::Models.configuration.default_adapter
+      @default_adapter ||= Adapters::MemoryAdapter.new(mapper)
     end
 
+    def mapper
+      @options[:mapper] || default_mapper
+    end
+
+    def default_mapper
+      @default_mapper ||= Locomotive::Mapper.load!(File.expand_path('../models/cms_mapper.rb', __FILE__))
+    end
   end
 
 end
