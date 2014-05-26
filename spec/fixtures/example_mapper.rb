@@ -9,9 +9,10 @@ end
 collection :articles do
   entity Locomotive::Example::Article
 
-  attribute :title,   localized: true
-  attribute :content, localized: true
+  attribute :title,   klass: String, localized: true
+  attribute :content, klass: String
   attribute :author,  association: true
+
 end
 
 collection :authors do

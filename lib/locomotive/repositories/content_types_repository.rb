@@ -1,12 +1,12 @@
 module Locomotive
   module Repositories
 
-    class SitesRepository
+    class ContentTypesRepository
       include Repository
 
-      def find_by_host(host)
+      def find_by_name(name)
         query do
-          where('domains.in' => host)
+          where('name.matches' => name)
         end.first
       end
     end
