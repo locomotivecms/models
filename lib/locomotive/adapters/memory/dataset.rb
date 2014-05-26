@@ -45,6 +45,10 @@ module Locomotive
           records.fetch(id) { raise Locomotive::Repository::RecordNotFound, "could not find #{name} with #{identity} = #{id}" }
         end
 
+        def exists? id
+          !!id && records.has_key?(id)
+        end
+
         def query
           Query.new(self)
         end

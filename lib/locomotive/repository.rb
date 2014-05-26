@@ -21,15 +21,19 @@ module Locomotive
       @adapter.query(collection, &block)
     end
 
-    def create entity, locale
+    def create(entity, locale)
       entity.id = @adapter.create(collection, entity, locale)
     end
 
-    def update entity, locale
+    def persisted?(entity)
+      !!entity.id && @adapter.persisted?(collection, entity)
+    end
+
+    def update(entity, locale)
       @adapter.update(collection, entity, locale)
     end
 
-    def destroy entity
+    def destroy(entity)
       @adapter.destroy(collection, entity)
     end
 

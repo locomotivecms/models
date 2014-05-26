@@ -120,4 +120,15 @@ describe Locomotive::Adapters::Memory::Dataset, pending: true do
 
   end
 
+  describe '#exists?' do
+    let(:dataset) { Locomotive::Adapters::Memory::Dataset.new(:dummy) }
+    before do
+      dataset.instance_variable_set('@records', { 1 => 'Record 1', 2 => 'Record 2' })
+    end
+
+    it { dataset.exists?(2).should   be_true  }
+    it { dataset.exists?(3).should   be_false }
+    it { dataset.exists?(nil).should be_false }
+
+  end
 end

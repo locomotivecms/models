@@ -30,5 +30,8 @@ describe Locomotive::Adapters::MemoryAdapter, pending: true do
         expect(adapter.all(:site).map(&:name)).to eq(['Acme', 'my awesome site'])
       end
     end
+
+    describe '#exists?', pending: 'TODO' do
+    end
   end
 end

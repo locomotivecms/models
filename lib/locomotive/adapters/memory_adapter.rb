@@ -31,6 +31,10 @@ module Locomotive
         Memory::Command.new(dataset(collection), collection).destroy(entity)
       end
 
+      def persisted?(collection, entity)
+        entity.id && dataset(collection).exists?(entity.id)
+      end
+
       def first(collection)
         dataset(collection).first
       end
@@ -49,9 +53,9 @@ module Locomotive
 
         # TODO move to query
       def find(collection, id, locale)
-        
+
         record = dataset(collection).find(id, locale)
-        
+
         _mapped_collection(collection).deserialize([record], locale).first
       end
 
