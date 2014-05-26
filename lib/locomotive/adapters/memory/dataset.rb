@@ -42,7 +42,9 @@ module Locomotive
         end
 
         def find id, locale
-          records.fetch(id) { raise Locomotive::Repository::RecordNotFound, "could not find #{name} with #{identity} = #{id}" }
+          records.fetch(id) do
+            raise Locomotive::Repository::RecordNotFound, "could not find #{name} with #{identity} = #{id}"
+          end
         end
 
         def exists? id
@@ -57,12 +59,12 @@ module Locomotive
           @records = {}
           @primary_key = PrimaryKey.new
         end
+
         private
 
         def identity
           @identity ||= :id
         end
-
       end
     end
   end

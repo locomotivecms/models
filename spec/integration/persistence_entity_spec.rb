@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 module Locomotive
 
   module Entities
@@ -10,10 +9,9 @@ module Locomotive
     end
   end
 
-
   describe '' do
     let(:entity) { Entities::Dummy.new({name: 'John Doe'}) }
-    
+
     let(:repository) do
       class DummyRepository
         include Repository
@@ -39,7 +37,7 @@ module Locomotive
         expect(repository.all(locale).size).to eq(1)
       end
       it 'gives an ID to the entity' do
-        entity.id.should_not be_nil        
+        entity.id.should_not be_nil
       end
     end
 
@@ -78,7 +76,6 @@ module Locomotive
         repository.destroy(entity)
         expect(repository.all(locale).size).to eq(0)
       end
-
     end
   end
 end
