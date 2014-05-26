@@ -9,14 +9,11 @@ require 'active_support'
 require 'active_support/core_ext'
 
 require_relative 'locomotive/core_ext'
-
 require_relative 'locomotive/entity'
-
 require_relative 'locomotive/fields'
+
 Dir[File.dirname(__FILE__) + '/locomotive/fields/*.rb'].each { |file| require file }
-
 Dir[File.dirname(__FILE__) + '/locomotive/entities/*.rb'].each { |file| require file }
-
 Dir[File.dirname(__FILE__) + '/locomotive/presenters/*.rb'].each { |file| require file }
 
 require_relative 'locomotive/mapper'

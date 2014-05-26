@@ -2,11 +2,10 @@ module Locomotive
   module Models
 
     class Configuration
-      attr_accessor :default_adapter, :default_loader
+      attr_accessor :default_adapter
 
       def initialize
         self.default_adapter = Adapters::MemoryAdapter.new
-        self.default_loader  = Adapters::Memory::EmptyLoader.new
       end
     end
 
