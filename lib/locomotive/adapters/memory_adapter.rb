@@ -2,8 +2,6 @@ require_relative 'memory/dataset'
 require_relative 'memory/condition'
 require_relative 'memory/query'
 require_relative 'memory/command'
-require_relative 'memory/empty_loader'
-require_relative 'memory/yaml_loader'
 
 module Locomotive
   module Adapters

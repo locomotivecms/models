@@ -8,19 +8,6 @@ module Locomotive
       @options = options
     end
 
-    # Build a mounting point from a host name returned by request.
-    #
-    def build_mounting_point(host)
-      MountingPoint.new(self, host)
-    end
-
-    def repositories
-      {
-        site: Repositories::SiteRepository.new(self, adapter),
-        content_type: Repositories::ContentTypeRepository.new(self, adapter),
-      }
-    end
-
     def adapter
       @options[:adapter] || default_adapter
     end

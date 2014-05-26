@@ -22,7 +22,6 @@ Dir[File.dirname(__FILE__) + '/locomotive/presenters/*.rb'].each { |file| requir
 require_relative 'locomotive/mapper'
 require_relative 'locomotive/mapping'
 require_relative 'locomotive/datastore'
-require_relative 'locomotive/mounting_point'
 require_relative 'locomotive/repository'
 
 Dir[File.dirname(__FILE__) + '/locomotive/repositories/*.rb'].each { |file| require file }
