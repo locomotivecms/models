@@ -38,7 +38,7 @@ describe Locomotive::Mapper do
     it { should be_an_instance_of(Locomotive::Mapper) }
 
     it 'loads the collections' do
-      subject.collections.size.should eq 3
+      subject.collections.size.should eq 4
       subject.collection(:articles).should be_an_instance_of Locomotive::Mapping::Collection
     end
   end

@@ -12,9 +12,11 @@ module Locomotive
 
     let(:article) { Example::Article.new(title: 'My title', content: 'The article content', author: author) }
     let(:author)  { Example::Author.new(name: 'John') }
+    let(:comment) { Example::Comment.new(title: 'awesome', content: 'Lorem ipsum dolor sit amet, ...', ) }
     let(:locale)  { :en }
 
     describe 'n-1 relationship' do
+
       describe 'Saving and retreiving' do
         before do
           authors_repository.create author, locale

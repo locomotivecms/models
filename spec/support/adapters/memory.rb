@@ -9,6 +9,7 @@ RSpec.shared_context 'memory' do
   let(:mapper_file) do
     File.expand_path('../../../fixtures/example_mapper.rb', __FILE__)
   end
+  
   let(:article_mapper) do
     mapper = Locomotive::Mapper.load_from_file! mapper_file
     mapper.load!
@@ -32,7 +33,6 @@ RSpec.shared_context 'memory' do
   end
 
   def fill_articles!
-
     records.each do |record|
       articles_repository.create(Locomotive::Example::Article.new(record), :en)
     end

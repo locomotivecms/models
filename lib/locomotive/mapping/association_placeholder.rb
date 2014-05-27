@@ -22,6 +22,7 @@ module Locomotive
       def repository=(repo)
         @repository = repo
       end
+
       def method_missing(name, *args, &block)
         __load__
         @object.public_send(name, *args, &block)

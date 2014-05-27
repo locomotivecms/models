@@ -23,11 +23,9 @@ module Locomotive
 
       def from_record(record, locale)
         @collection.entity.new(id: record[:id]).tap do |_entity|
-
           @collection.attributes.each do |name, options|
-
             value = if options[:localized]
-                record[name][locale]
+              record[name][locale]
             elsif options[:association]
               AssociationPlaceholder.new(record[:"#{name}_id"], locale) do |associated_object|
                 _entity.send(:"#{name}=", associated_object)
