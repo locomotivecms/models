@@ -5,7 +5,7 @@ module Locomotive
   describe '' do
     include_context 'memory'
 
-    let(:entity)  { Entities::Article.new(record) }
+    let(:entity)  { Example::Article.new(record) }
     let(:record)  {{ title: 'new article', content: 'nothing has changed' }}
     let(:records) {[ record ]}
     let(:locale)    { :en }
@@ -40,7 +40,7 @@ module Locomotive
         before  { articles_repository.create(entity, locale) }
         subject { articles_repository.find(entity.id, locale) }
 
-        it { should be_kind_of Entities::Article }
+        it { should be_kind_of Example::Article }
         its(:id) { should_not be_nil }
       end
 

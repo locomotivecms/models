@@ -51,6 +51,10 @@ module Locomotive
           end
         end
 
+        def exists? id
+          !!id && records.has_key?(id)
+        end
+
         def query
           Query.new(self)
         end

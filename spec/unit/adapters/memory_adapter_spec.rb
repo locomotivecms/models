@@ -13,9 +13,13 @@ module Locomotive
       end
 
       it '' do
-        adapter.find(:articles, 1, :en).should be_a(Entities::Article)
+        adapter.find(:articles, 1, :en).should be_a(Example::Article)
       end
 
     end
   end
+
+  describe '#exists?', pending: 'TODO' do
+  end
+
 end

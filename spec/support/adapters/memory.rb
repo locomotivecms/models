@@ -1,17 +1,16 @@
+require 'fixtures/example_entities'
+require 'fixtures/example_repositories'
+
 RSpec.shared_context 'memory' do
   let(:datastore) do
     Locomotive::Datastore.new
   end
 
+  let(:mapper_file) do
+    File.expand_path('../../../fixtures/example_mapper.rb', __FILE__)
+  end
   let(:article_mapper) do
-    mapper = Locomotive::Mapper.new do
-      collection :articles do
-        entity Locomotive::Entities::Article
-        
-        attribute :title,   klass: String, localized: true
-        attribute :content, klass: String
-      end
-    end
+    mapper = Locomotive::Mapper.load_from_file! mapper_file
     mapper.load!
     mapper
   end
@@ -21,7 +20,11 @@ RSpec.shared_context 'memory' do
   end
 
   let(:articles_repository) do
-    Locomotive::ArticlesRepository.new(datastore, adapter)
+    Locomotive::Example::ArticlesRepository.new(datastore, adapter)
+  end
+
+  let(:authors_repository) do
+    Locomotive::Example::AuthorsRepository.new(datastore, adapter)
   end
 
   let(:records) do
@@ -31,7 +34,7 @@ RSpec.shared_context 'memory' do
   def fill_articles!
 
     records.each do |record|
-      articles_repository.create(Locomotive::Entities::Article.new(record), :en)
+      articles_repository.create(Locomotive::Example::Article.new(record), :en)
     end
   end
 end

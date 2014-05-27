@@ -1,6 +1,18 @@
-module ExampleEntities
-  class Article
-  end
-  class Author
+module Locomotive
+  module Example
+    class Article
+      include Locomotive::Entity
+      attributes :title, :content, :author
+    end
+
+    class Author
+      include Locomotive::Entity
+      attributes :name
+    end
+
+    class Product
+      include Locomotive::Entity
+      attributes :title, :price
+    end
   end
 end

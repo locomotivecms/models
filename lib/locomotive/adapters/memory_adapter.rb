@@ -29,6 +29,10 @@ module Locomotive
         Memory::Command.new(dataset(collection), collection).destroy(entity)
       end
 
+      def persisted?(collection, entity)
+        entity.id && dataset(collection).exists?(entity.id)
+      end
+
       def first(collection)
         dataset(collection).first
       end
