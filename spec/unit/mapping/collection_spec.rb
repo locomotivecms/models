@@ -2,13 +2,14 @@ require 'spec_helper'
 
 module Locomotive
   describe Mapping::Collection do
+    let(:mapper) { double }
 
     subject do
-      collection = Mapping::Collection.new(:site, Mapping::Coercer) do
+      collecion = Mapping::Collection.new(mapper, :site, Mapping::Coercer) do
         entity Entities::Site
       end
-      collection.load!
-      collection
+      collecion.load!
+      collecion
     end
 
     describe '#deserialize' do

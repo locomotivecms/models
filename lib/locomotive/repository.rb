@@ -4,9 +4,10 @@ module Locomotive
 
     class RecordNotFound < StandardError; end
 
-    def initialize(datastore, adapter)
-      @datastore  = datastore
-      @adapter    = adapter
+    attr_reader :mapper
+
+    def initialize(mapper)
+      @adapter = mapper.adapter
     end
 
     def all(locale)
@@ -35,11 +36,6 @@ module Locomotive
 
     def destroy(entity)
       @adapter.destroy(collection, entity)
-    end
-
-    def load_association entity, association_name
-      placeholder = entity.send(:"#{association_name}")
-      placeholder.repository = self
     end
 
     def collection

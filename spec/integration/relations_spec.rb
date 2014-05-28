@@ -6,10 +6,6 @@ module Locomotive
 
     include_context 'memory'
 
-    let(:mapper) do
-      Mapper.load_from_file! File.expand_path('../../fixtures/example_mapper.rb', __FILE__)
-    end
-
     let(:article) { Example::Article.new(title: 'My title', content: 'The article content', author: author) }
     let(:author)  { Example::Author.new(name: 'John') }
     let(:comment) { Example::Comment.new(title: 'awesome', content: 'Lorem ipsum dolor sit amet, ...', ) }
@@ -30,7 +26,6 @@ module Locomotive
 
         it 'Lazily loads the associated record' do
           article_double = articles_repository.find(article.id, :en)
-          authors_repository.load_association article_double, :author
           article_double.author.name.should eq 'John'
           article_double.author.should be_kind_of Example::Author
         end

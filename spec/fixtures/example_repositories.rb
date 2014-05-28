@@ -1,4 +1,4 @@
-module Locomotive
+  module Locomotive
   module Example
     class ArticlesRepository
       include Locomotive::Repository
