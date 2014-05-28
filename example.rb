@@ -41,6 +41,7 @@ mapper = Locomotive::Mapper.new(adapter) do
 end.load!
 
 authors_repository  = Locomotive::Models.mapper.collection(:authors).repository
+# authors_repository  = Locomotive[:authors]
 articles_repository = Locomotive::Models.mapper.collection(:articles).repository
 
 author  = Author.new(name: 'John')
