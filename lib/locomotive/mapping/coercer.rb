@@ -11,7 +11,7 @@ module Locomotive
           _attributes[:id] = entity.id
           @collection.attributes.each do |name, options|
             if options[:localized]
-              _attributes[name] = { locale => entity.send(name) }
+              _attributes[name] = to_locale(entity.send(name), locale)
             elsif options[:association]
               _attributes[name] = entity.send(name).try(:id)
             else
@@ -43,6 +43,15 @@ module Locomotive
               _entity.send(:"#{name}=", value)
             end
           end
+
+        end
+      end
+      protected
+      def to_locale(content, locale)
+        if content.respond_to?(:has_key?) && content.has_key?(locale.to_sym)
+          content
+        else
+          { locale.to_sym => content }
         end
       end
     end
