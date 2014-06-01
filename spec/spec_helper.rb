@@ -8,7 +8,7 @@ begin
 rescue LoadError
 end
 
-require_relative '../lib/locomotive_models'
+require_relative '../lib/locomotive/models'
 
 ENV['ADAPTER'] ||= 'memory'
 

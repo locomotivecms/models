@@ -1,4 +1,4 @@
-# irb -r locomotive_models -I ./lib
+# irb -r locomotive/models -I ./lib
 
 require 'pry'
 
