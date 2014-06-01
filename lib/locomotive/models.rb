@@ -41,6 +41,10 @@ module Locomotive
       yield(configuration)
     end
 
+    def self.[] name
+      @mapper[name]
+    end
+
     def self.mapper _mapper = nil
       if _mapper
         @mapper = _mapper
