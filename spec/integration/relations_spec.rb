@@ -36,8 +36,39 @@ module Locomotive
           article_double.comments.first.should be_kind_of Example::Comment
           article_double.comments.first.title.should eq 'awesome'
         end
+      end
+
+      context 'when associated objects are non persisted' do
+
+        context 'one to many' do
+          let(:article) do
+            Example::Article.new(title: 'My title', content: 'The article content', comments: [comment])
+          end
+
+          before do articles_repository.create article, locale end
+
+          it 'Lazily loads the associated record' do
+            article_double = articles_repository.find(article.id, :en)
+            article_double.comments.first.should be_kind_of Example::Comment
+            article_double.comments.first.title.should eq 'awesome'
+          end
+        end
+
+        context 'belongs to' do
+          let(:article) do
+            Example::Article.new(title: 'My title', content: 'The article content', author: author)
+          end
+          before do articles_repository.create article, locale end
+
+          it 'Lazily loads the associated record' do
+            article_double = articles_repository.find(article.id, :en)
+            article_double.author.name.should eq 'John'
+            article_double.author.should be_kind_of Example::Author
+          end
+        end
 
       end
+
     end
   end
 end

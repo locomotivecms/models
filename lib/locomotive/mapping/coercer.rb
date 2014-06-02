@@ -15,9 +15,20 @@ module Locomotive
             elsif options[:association]
               case entity.send(name)
               when Array
+                entity.send(name).each do |associated_entity|
+                  unless associated_entity.id # Non persisted
+                    Locomotive::Models[name].create associated_entity, locale
+                  end
+                end
                 _attributes[name] = entity.send(name).map(&:id)
               else
-                _attributes[name] = entity.send(name).try(:id)
+                associated_entity = entity.send(name)
+                if associated_entity
+                  unless associated_entity.id # Non persisted
+                    Locomotive::Models[options[:association]].create associated_entity, locale
+                  end
+                  _attributes[name] = associated_entity.id
+                end
               end
             else
               _attributes[name] = entity.send(name)
