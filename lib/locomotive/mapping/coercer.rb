@@ -51,12 +51,14 @@ module Locomotive
                   }
                 )
               else
-                _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
-                    _entity.send(:"#{name}=",
-                      Models[options[:association]].find(record[name], locale)
-                    )
-                  }
-                )
+                if record[name]
+                  _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
+                      _entity.send(:"#{name}=",
+                        Models[options[:association]].find(record[name], locale)
+                      )
+                    }
+                  )
+                end
               end
             else
               record[name]

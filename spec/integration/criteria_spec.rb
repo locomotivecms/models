@@ -7,8 +7,8 @@ describe 'query' do
 
     let(:entity)  { Example::Article.new(record) }
     let(:records) do
-      [ { title: 'Article 1', content: 'content 1' },
-        { title: 'Article 2', content: 'content 2' } ]
+      [ { title: { en: 'Article 1'}, content: 'content 1' },
+        { title: { en: 'Article 2'}, content: 'content 2' } ]
     end
     let(:locale)  { :en }
 
@@ -27,6 +27,13 @@ describe 'query' do
       ).to eq('Article 1')
     end
 
+    specify('i18n field') do
+      expect(
+        articles_repository.query(locale) do
+          where('title.eq' => 'Article 2').
+          where('id.gt' => 1)
+        end.first.title
+      ).to eq('Article 2')
+    end
   end
-
 end

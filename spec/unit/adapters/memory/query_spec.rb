@@ -17,11 +17,12 @@ module Locomotive
             dataset.stub records: records
           end
         end
+        let(:locale) { :en }
 
         describe '#limited' do
           specify do
             expect(
-              Query.new(dataset) do
+              Query.new(dataset, locale) do
                 limit(1)
               end.all
             ).to eq([entry_1])
@@ -33,7 +34,7 @@ module Locomotive
           context 'asc' do
             specify do
               expect(
-                Query.new(dataset) do
+                Query.new(dataset, locale) do
                   order_by('name asc')
                 end.all.map(&:id)
               ).to eq([2, 1, 3])
@@ -43,7 +44,7 @@ module Locomotive
           context 'desc' do
             specify do
               expect(
-                Query.new(dataset) do
+                Query.new(dataset, locale) do
                   order_by('name desc')
                 end.all.map(&:id)
               ).to eq([3, 1, 2])
@@ -54,7 +55,7 @@ module Locomotive
         describe '#where' do
           specify do
             expect(
-              Query.new(dataset) do
+              Query.new(dataset, locale) do
                 where('name.eq' => 'foo').
                 where('id.lt' => 2)
               end.all.map(&:id)

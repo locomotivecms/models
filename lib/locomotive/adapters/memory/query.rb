@@ -14,17 +14,18 @@ module Locomotive
         alias :length :size
         alias :count :size
 
-        def initialize(dataset, &block)
+        def initialize(dataset, locale, &block)
           @dataset    = dataset
           @conditions = []
           @sorting = nil
           @limit = nil
           @offset = 0
+          @locale = locale
           instance_eval(&block) if block_given?
         end
 
         def where(conditions = {})
-          @conditions += conditions.map { |name, value| Condition.new(name, value) }
+          @conditions += conditions.map { |name, value| Condition.new(name, value, @locale) }
           self
         end
 

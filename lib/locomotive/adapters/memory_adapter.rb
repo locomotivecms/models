@@ -47,7 +47,7 @@ module Locomotive
 
       def query(locale, collection, &block)
         _mapped_collection(collection).deserialize(
-          Memory::Query.new(dataset(collection), &block),
+          Memory::Query.new(dataset(collection), locale, &block),
         locale)
       end
 

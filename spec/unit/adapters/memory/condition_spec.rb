@@ -1,66 +1,42 @@
 require 'spec_helper'
 
 describe Locomotive::Adapters::Memory::Condition do
-  let(:name) { 'domains.in' }
-  let(:value) { 'sample.example.com' }
+  let(:entry)    {{ title: { en: 'Awesome Site' }, content: 'foo' }}
+  let(:locale)   { :en }
+  let(:field)    { :title }
+  let(:operator) { :eq }
+  let(:name)     { "#{field}.#{operator}"}
+  let(:value)    { 'Awesome Site' }
 
-  subject { Locomotive::Adapters::Memory::Condition.new(name, value) }
+  subject { Locomotive::Adapters::Memory::Condition.new(name, value, locale) }
 
   describe '#get_value' do
-    before do subject.stub(name: :sites) end
-    context 'single entry wihtout slug' do
-      let(:entry) {{ sites: { title: 'Awesome Site' }}}
-      specify('return an Array of record') do
-        expect(subject.send(:get_value, entry)).to eq([['title', 'Awesome Site']])
-      end
-    end
-    context 'array of entries without slug' do
-      let(:entry) {{ sites: [{ title: 'Awesome Site' }] }}
-      specify('return array of entries') do
-        expect(subject.send(:get_value, entry)).to eq([{title: 'Awesome Site'}])
-      end
-    end
-    context 'single entry with slug' do
-      let(:entry) {{ sites: { _slug: 42, title: 'Awesome Site' } }}
-      specify('return only the slug') do
-        expect(subject.send(:get_value, entry)).to eq(42)
-      end
-    end
-    context 'array of entries with slug' do
-      let(:entry) {{ sites: [{ _slug: 42, title: 'Awesome Site' }] }}
-      specify('return array of slugs') do
-        expect(subject.send(:get_value, entry)).to eq([42])
-      end
-    end
-  end
+    context 'i18n' do
+      let(:name)  { 'title.eq' }
+      let(:value) { 'Awesome Site' }
 
-  describe '#process_right_operand' do
-    before { subject.send(:process_right_operand) }
+      context 'single entry' do
+        specify('should be match') do
+          expect(subject.matches?(entry)).to be_true
+        end
 
-    context 'with single value without slug' do
-      specify('value should not modify right_operand') do
-        expect(subject.right_operand).to eq(value)
+        specify('return value') do
+          expect(subject.send(:get_value, entry)).to eq(value)
+        end
       end
     end
+    context 'regular way' do
+      let(:name)  { 'content.eq' }
+      let(:value) { 'foo' }
 
-    context 'with array of values without slug' do
-      let(:value) { ['sample.example.com'] }
-      specify('value should not modify right_operand') do
-        expect(subject.right_operand).to eq(value)
-      end
-    end
+      context 'single entry' do
+        specify('should be match') do
+          expect(subject.matches?(entry)).to be_true
+        end
 
-    context 'with single value with slug' do
-      let(:value) {{ _slug: 42, url: 'sample.example.com' }}
-      specify('right_operand should be slug') do
-        expect(subject.right_operand).to eq(42)
-      end
-    end
-
-    context 'with array of values with slug' do
-      let(:value) {[{ _slug: 42, url: 'sample.example.com' }]}
-      specify('right_operand should be array of slugs') do
-        expect(subject.right_operand).to eq([42])
+        specify('return value') do
+          expect(subject.send(:get_value, entry)).to eq(value)
+        end
       end
     end
   end
@@ -69,9 +45,9 @@ describe Locomotive::Adapters::Memory::Condition do
     before { subject.send(:decode_operator_based_on_name) }
 
     context 'with normal value' do
-      specify('name should be left part of dot') { expect(subject.name).to eq(:domains) }
-      specify('operator should be right part of dot') { expect(subject.operator).to eq(:in) }
-      specify('right_operand should be value') { expect(subject.right_operand).to eq('sample.example.com') }
+      specify('name should be left part of dot') { expect(subject.name).to eq(field) }
+      specify('operator should be right part of dot') { expect(subject.operator).to eq(operator) }
+      specify('right_operand should be value') { expect(subject.right_operand).to eq(value) }
     end
 
     context 'with regex value' do

@@ -8,11 +8,11 @@ module Locomotive
 
         OPERATORS = %i(== eq ne neq matches gt gte lt lte size all in nin).freeze
 
-        attr_accessor :name, :operator, :right_operand
+        attr_accessor :name, :operator, :right_operand, :locale
 
-        def initialize(name, value)
+        def initialize(name, value, locale)
+          self.locale = locale
           self.name, self.right_operand = name, value
-          self.process_right_operand
           # default value
           self.operator = :==
           self.decode_operator_based_on_name
@@ -48,28 +48,11 @@ module Locomotive
         protected
 
         def get_value(entry)
-          value = entry.send(self.name)
-
-          if value.respond_to?(:_slug)
-            # belongs_to
-            value._slug
-          elsif value.respond_to?(:map)
-            # many_to_many or tags ?
-            value.map { |v| v.respond_to?(:_slug) ? v._slug : v }
+          case (value = entry.send(self.name))
+          when Hash
+            value.fetch(self.locale.to_s)
           else
             value
-          end
-        end
-
-        def process_right_operand
-          if self.right_operand.respond_to?(:_slug)
-            # belongs_to
-            self.right_operand = self.right_operand._slug
-          elsif self.right_operand.respond_to?(:map) && self.right_operand.first.respond_to?(:_slug)
-            # many_to_many
-            self.right_operand = self.right_operand.map do |entry|
-              entry.send(:_slug) if entry
-            end
           end
         end
 
