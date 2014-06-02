@@ -10,7 +10,7 @@ describe Locomotive::Adapters::Memory::Condition do
 
   subject { Locomotive::Adapters::Memory::Condition.new(name, value, locale) }
 
-  describe '#get_value' do
+  describe '#entry_value' do
     context 'i18n' do
       let(:name)  { 'title.eq' }
       let(:value) { 'Awesome Site' }
@@ -21,7 +21,7 @@ describe Locomotive::Adapters::Memory::Condition do
         end
 
         specify('return value') do
-          expect(subject.send(:get_value, entry)).to eq(value)
+          expect(subject.send(:entry_value, entry)).to eq(value)
         end
       end
     end
@@ -35,19 +35,19 @@ describe Locomotive::Adapters::Memory::Condition do
         end
 
         specify('return value') do
-          expect(subject.send(:get_value, entry)).to eq(value)
+          expect(subject.send(:entry_value, entry)).to eq(value)
         end
       end
     end
   end
 
-  describe '#decode_operator_based_on_name' do
-    before { subject.send(:decode_operator_based_on_name) }
+  describe '#decode_operator_and_field!' do
+    before { subject.send(:decode_operator_and_field!) }
 
     context 'with normal value' do
-      specify('name should be left part of dot') { expect(subject.name).to eq(field) }
+      specify('name should be left part of dot') { expect(subject.field).to eq(field) }
       specify('operator should be right part of dot') { expect(subject.operator).to eq(operator) }
-      specify('right_operand should be value') { expect(subject.right_operand).to eq(value) }
+      specify('right_operand should be value') { expect(subject.value).to eq(value) }
     end
 
     context 'with regex value' do
@@ -56,22 +56,22 @@ describe Locomotive::Adapters::Memory::Condition do
     end
   end
 
-  describe '#decode_operator_based_on_name' do
+  describe '#decode_operator_and_field!' do
     context 'with unsupported operator' do
       let(:name) { 'domains.unsupported' }
       specify('should be throw Exception') do
         expect do
-          subject.send(:decode_operator_based_on_name)
+          subject.send(:decode_operator_and_field!)
         end.to raise_error Locomotive::Adapters::Memory::Condition::UnsupportedOperator
       end
     end
   end
 
-  describe '#decode_operator_based_on_value' do
+  describe '#adapt_operator!' do
     let(:name) { 'domains.==' }
     before do
-      subject.send(:decode_operator_based_on_name)
-      subject.send(:decode_operator_based_on_value, value)
+      subject.send(:decode_operator_and_field!)
+      subject.send(:adapt_operator!, value)
     end
     context 'with single value' do
       let(:value) { 'sample.example.com' }
@@ -105,14 +105,14 @@ describe Locomotive::Adapters::Memory::Condition do
       context 'with operator :in' do
         let(:operator) { :in }
         specify('should return true') do
-          expect(subject.send(:value_in_right_operand?, value)).to be_true
+          expect(subject.send(:value_is_in_entry_value?, value)).to be_true
         end
       end
 
       context 'with other operator' do
         let(:operator) { :nin }
         specify('should not return true') do
-          expect(subject.send(:value_in_right_operand?, value)).to be_false
+          expect(subject.send(:value_is_in_entry_value?, value)).to be_false
         end
       end
     end
