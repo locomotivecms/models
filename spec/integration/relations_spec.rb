@@ -6,15 +6,19 @@ module Locomotive
 
     include_context 'memory'
 
-    let(:article) { Example::Article.new(title: 'My title', content: 'The article content', author: author) }
+    let(:article) do
+      Example::Article.new(title: 'My title', content: 'The article content',
+        author: author, comments: [comment]) }
     let(:author)  { Example::Author.new(name: 'John') }
     let(:comment) { Example::Comment.new(title: 'awesome', content: 'Lorem ipsum dolor sit amet, ...', ) }
+
     let(:locale)  { :en }
 
     describe 'n-1 relationship' do
 
       describe 'Saving and retreiving' do
         before do
+          comments_repository.create comment, locale
           authors_repository.create author, locale
           articles_repository.create article, locale
         end

@@ -92,6 +92,12 @@ module Locomotive
           end
         end # filtered
 
+        private
+
+        def _deserialize(entity, locale)
+          @collection.deserialize(entity, locale)
+        end
+
       end
     end
   end

@@ -14,7 +14,7 @@ collection :articles do
   attribute :content,  klass: String
 
   attribute :author,   association: :authors
-  # attribute :comments, association: :comments
+  attribute :comments, association: :comments
 end
 
 collection :authors do
