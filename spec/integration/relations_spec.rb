@@ -8,7 +8,8 @@ module Locomotive
 
     let(:article) do
       Example::Article.new(title: 'My title', content: 'The article content',
-        author: author, comments: [comment]) }
+        author: author, comments: [comment])
+    end
     let(:author)  { Example::Author.new(name: 'John') }
     let(:comment) { Example::Comment.new(title: 'awesome', content: 'Lorem ipsum dolor sit amet, ...', ) }
 
@@ -32,6 +33,8 @@ module Locomotive
           article_double = articles_repository.find(article.id, :en)
           article_double.author.name.should eq 'John'
           article_double.author.should be_kind_of Example::Author
+          article_double.comments.first.should be_kind_of Example::Comment
+          article_double.comments.first.title.should eq 'awesome'
         end
 
       end

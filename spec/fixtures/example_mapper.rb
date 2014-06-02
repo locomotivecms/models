@@ -31,5 +31,5 @@ collection :comments do
   attribute :title
   attribute :content
   attribute :article, association: :articles
-  attribute :author,  association: :authors
+  # attribute :author,  association: :authors
 end
