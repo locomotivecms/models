@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Locomotive
   module Adapters
     module Memory

@@ -9,9 +9,20 @@ module Locomotive
       attr_reader :coercer_class
       attr_reader :attributes
 
-      def initialize(name, coercer_class, &blk)
+      def initialize(mapper, name, coercer_class, &blk)
         @name, @coercer_class, @attributes = name, coercer_class, {}
+        @mapper = mapper
+
         instance_eval(&blk) if block_given?
+      end
+
+      # TODO Should be guessed too
+      def repository(klass = nil)
+        if klass
+          @repository = klass.new @mapper
+        else
+          @repository
+        end
       end
 
       def entity(klass = nil)
@@ -46,16 +57,6 @@ module Locomotive
 
       def load!
         @coercer = coercer_class.new(self)
-        configure_repository!
-      end
-
-
-      private
-
-      def configure_repository!
-        repository = Object.const_get("#{ entity.name }#{ REPOSITORY_SUFFIX }")
-        repository.collection = name
-      rescue NameError
       end
 
     end
