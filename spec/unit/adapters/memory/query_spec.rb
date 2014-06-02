@@ -55,7 +55,8 @@ module Locomotive
           specify do
             expect(
               Query.new(dataset) do
-                where('name.eq' => 'foo')
+                where('name.eq' => 'foo').
+                where('id.lt' => 2)
               end.all.map(&:id)
             ).to eq([1])
           end
