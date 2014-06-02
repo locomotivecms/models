@@ -8,20 +8,20 @@ I18n.config.enforce_available_locales = true
 require 'active_support'
 require 'active_support/core_ext'
 
-require_relative 'locomotive/core_ext'
-require_relative 'locomotive/entity'
+require_relative 'core_ext'
+require_relative 'entity'
 
-Dir[File.dirname(__FILE__) + '/locomotive/entities/*.rb'].each { |file| require file }
-Dir[File.dirname(__FILE__) + '/locomotive/presenters/*.rb'].each { |file| require file }
+Dir[File.dirname(__FILE__) + '/entities/*.rb'].each { |file| require file }
+Dir[File.dirname(__FILE__) + '/presenters/*.rb'].each { |file| require file }
 
-require_relative 'locomotive/mapper'
-require_relative 'locomotive/mapping'
-require_relative 'locomotive/repository'
+require_relative 'mapper'
+require_relative 'mapping'
+require_relative 'repository'
 
-Dir[File.dirname(__FILE__) + '/locomotive/repositories/*.rb'].each { |file| require file }
+Dir[File.dirname(__FILE__) + '/repositories/*.rb'].each { |file| require file }
 
-require_relative 'locomotive/adapters/memory_adapter'
-require_relative 'locomotive/models/configuration'
+require_relative 'adapters/memory_adapter'
+require_relative 'models/configuration'
 
 module Locomotive
   module Models
@@ -39,6 +39,10 @@ module Locomotive
 
     def self.configure
       yield(configuration)
+    end
+
+    def self.[] name
+      @mapper[name]
     end
 
     def self.mapper _mapper = nil

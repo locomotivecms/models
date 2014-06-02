@@ -25,6 +25,10 @@ module Locomotive
       Models.mapper self
     end
 
+    def [] name
+      collection(name.to_sym).repository
+    end
+
     def collection(name, &blk)
       if block_given?
         @collections[name] = Mapping::Collection.new(self, name, @coercer, &blk)
