@@ -64,16 +64,10 @@ mapper = Locomotive::Mapper.new(adapter) do
 
 end.load!
 
-authors_repository  = Locomotive::Models[:authors]
 articles_repository = Locomotive::Models[:articles]
-comments_repository = Locomotive::Models[:comments]
 
 author  = Author.new(name: 'John')
-authors_repository.create author, locale
-
 comment = Comment.new(title: 'New Comment')
-comments_repository.create comment, locale
-
 article = Article.new(title: "Title #{rand(100_000)}", author: author, comments: [comment])
 articles_repository.create article, locale
 

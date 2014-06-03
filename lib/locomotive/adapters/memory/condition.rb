@@ -8,99 +8,84 @@ module Locomotive
 
         OPERATORS = %i(== eq ne neq matches gt gte lt lte size all in nin).freeze
 
-        attr_accessor :name, :operator, :right_operand
+        attr_reader :field, :operator, :value
 
-        def initialize(name, value)
-          self.name, self.right_operand = name, value
-          self.process_right_operand
-          # default value
-          self.operator = :==
-          self.decode_operator_based_on_name
+        def initialize(operator_and_field, value, locale)
+          @locale = locale
+          @operator_and_field, @value = operator_and_field, value
+          @operator, @field = :==, nil
+
+          decode_operator_and_field!
         end
 
         def matches?(entry)
-          value = self.get_value(entry)
+          entry_value = entry_value(entry)
 
-          self.decode_operator_based_on_value(value)
+          adapt_operator!(entry_value)
 
-          case self.operator
-          when :==        then value == self.right_operand
-          when :eq        then value == self.right_operand
-          when :ne        then value != self.right_operand
-          when :neq       then value != self.right_operand
-          when :matches   then self.right_operand =~ value
-          when :gt        then value > self.right_operand
-          when :gte       then value >= self.right_operand
-          when :lt        then value < self.right_operand
-          when :lte       then value <= self.right_operand
-          when :size      then value.size == self.right_operand
-          when :all       then array_contains?([*self.right_operand], value)
-          when :in, :nin  then value_in_right_operand?(value)
+          case @operator
+          when :==        then entry_value == @value
+          when :eq        then entry_value == @value
+          when :ne        then entry_value != @value
+          when :neq       then entry_value != @value
+          when :matches   then @value =~ entry_value
+          when :gt        then entry_value > @value
+          when :gte       then entry_value >= @value
+          when :lt        then entry_value < @value
+          when :lte       then entry_value <= @value
+          when :size      then entry_value.size == @value
+          when :all       then array_contains?([*@value], entry_value)
+          when :in, :nin  then value_is_in_entry_value?(entry_value)
           else
-            raise UnknownConditionInScope.new("#{self.operator} is unknown or not implemented.")
+            raise UnknownConditionInScope.new("#{@operator} is unknown or not implemented.")
           end
         end
 
         def to_s
-          "#{name} #{operator} #{self.right_operand.to_s}"
+          "#{field} #{operator} #{@value.to_s}"
         end
 
         protected
 
-        def get_value(entry)
-          value = entry.send(self.name)
-
-          if value.respond_to?(:_slug)
-            # belongs_to
-            value._slug
-          elsif value.respond_to?(:map)
-            # many_to_many or tags ?
-            value.map { |v| v.respond_to?(:_slug) ? v._slug : v }
+        def entry_value(entry)
+          case (value = entry.send(@field))
+          when Hash
+            value.fetch(@locale.to_s)
           else
             value
           end
         end
 
-        def process_right_operand
-          if self.right_operand.respond_to?(:_slug)
-            # belongs_to
-            self.right_operand = self.right_operand._slug
-          elsif self.right_operand.respond_to?(:map) && self.right_operand.first.respond_to?(:_slug)
-            # many_to_many
-            self.right_operand = self.right_operand.map do |entry|
-              entry.send(:_slug) if entry
-            end
+        def decode_operator_and_field!
+          if match = @operator_and_field.match(/^(?<field>[a-z0-9_-]+)\.(?<operator>.*)$/)
+            @field     = match[:field].to_sym
+            @operator = match[:operator].to_sym
+            check_operator!
           end
+
+          @operator = :matches if @value.is_a?(Regexp)
         end
 
-        def decode_operator_based_on_name
-          if match = name.match(/^(?<name>[a-z0-9_-]+)\.(?<operator>.*)$/)
-            self.name     = match[:name].to_sym
-            self.operator = match[:operator].to_sym
-            unless OPERATORS.include? self.operator
-              raise UnsupportedOperator.new
-            end
-          end
-
-          if self.right_operand.is_a?(Regexp)
-            self.operator = :matches
-          end
-        end
-
-        def decode_operator_based_on_value(value)
+        def adapt_operator!(value)
           case value
           when Array
-            self.operator = :in if self.operator == :==
+            @operator = :in if @operator == :==
           end
         end
 
-        def value_in_right_operand?(value)
+        def value_is_in_entry_value?(value)
           _matches = if value.is_a?(Array)
-            array_contains?([*value], [*self.right_operand])
+            array_contains?([*value], [*@value])
           else
-            [*self.right_operand].include?(value)
+            [*@value].include?(value)
           end
-          self.operator == :in ? _matches : !_matches
+          @operator == :in ? _matches : !_matches
+        end
+
+        private
+
+        def check_operator!
+          raise UnsupportedOperator.new unless OPERATORS.include?(@operator)
         end
 
         def array_contains?(source, target)

@@ -18,8 +18,8 @@ module Locomotive
       @adapter.find(collection, id, locale)
     end
 
-    def query(&block)
-      @adapter.query(collection, &block)
+    def query(locale, &block)
+      @adapter.query(locale, collection, &block)
     end
 
     def create(entity, locale)

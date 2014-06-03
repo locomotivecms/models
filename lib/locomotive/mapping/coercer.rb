@@ -13,7 +13,23 @@ module Locomotive
             if options[:localized]
               _attributes[name] = to_locale(entity.send(name), locale)
             elsif options[:association]
-              _attributes[name] = entity.send(name).try(:id)
+              case entity.send(name)
+              when Array
+                entity.send(name).each do |associated_entity|
+                  unless associated_entity.id # Non persisted
+                    Locomotive::Models[name].create associated_entity, locale
+                  end
+                end
+                _attributes[name] = entity.send(name).map(&:id)
+              else
+                associated_entity = entity.send(name)
+                if associated_entity
+                  unless associated_entity.id # Non persisted
+                    Locomotive::Models[options[:association]].create associated_entity, locale
+                  end
+                  _attributes[name] = associated_entity.id
+                end
+              end
             else
               _attributes[name] = entity.send(name)
             end
@@ -27,12 +43,23 @@ module Locomotive
             value = if options[:localized]
               record[name][locale]
             elsif options[:association]
-              _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
-                  _entity.send(:"#{name}=",
-                    Models.mapper.collection(options[:association]).repository.find(record[name], locale)
+              case record[name]
+              when Array
+                _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
+                    _entity.send(:"#{name}=",
+                      Models[options[:association]].where(locale, 'id.in', record[name]))
+                  }
+                )
+              else
+                if record[name]
+                  _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
+                      _entity.send(:"#{name}=",
+                        Models[options[:association]].find(record[name], locale)
+                      )
+                    }
                   )
-                }
-              )
+                end
+              end
             else
               record[name]
             end
@@ -46,7 +73,9 @@ module Locomotive
 
         end
       end
+
       protected
+
       def to_locale(content, locale)
         if content.respond_to?(:has_key?) && content.has_key?(locale.to_sym)
           content
@@ -54,6 +83,7 @@ module Locomotive
           { locale.to_sym => content }
         end
       end
+
     end
   end
 end

@@ -24,6 +24,10 @@ RSpec.shared_context 'memory' do
     Locomotive::Example::AuthorsRepository.new(mapper)
   end
 
+  let(:comments_repository) do
+    Locomotive::Example::CommentsRepository.new(mapper)
+  end
+
   let(:records) do
     [{ title: 'new article', content: 'nothing has changed' }]
   end
