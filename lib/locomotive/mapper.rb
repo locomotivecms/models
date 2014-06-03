@@ -37,10 +37,5 @@ module Locomotive
       end
     end
 
-    def load!
-      @collections.each_value { |collection| collection.load! }
-      self
-    end
   end
-
 end

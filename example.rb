@@ -62,7 +62,7 @@ mapper = Locomotive::Mapper.new(adapter) do
     attribute :title
   end
 
-end.load!
+end
 
 authors_repository  = Locomotive::Models[:authors]
 articles_repository = Locomotive::Models[:articles]

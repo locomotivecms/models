@@ -12,8 +12,7 @@ RSpec.shared_context 'memory' do
   end
 
   let!(:mapper) do
-    mapper = Locomotive::Mapper.load_from_file! adapter, mapper_file
-    mapper.load!
+    Locomotive::Mapper.load_from_file! adapter, mapper_file
   end
 
   let(:articles_repository) do

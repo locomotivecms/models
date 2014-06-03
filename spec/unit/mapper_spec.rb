@@ -26,7 +26,7 @@ module Locomotive
 
           attribute :foo
         end
-      end.load!
+      end
     end
 
     describe '' do

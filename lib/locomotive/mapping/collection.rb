@@ -14,6 +14,8 @@ module Locomotive
         @mapper = mapper
 
         instance_eval(&blk) if block_given?
+
+        load!
       end
 
       # TODO Should be guessed too
@@ -54,6 +56,8 @@ module Locomotive
           @coercer.from_record(record, locale)
         end
       end
+
+      private
 
       def load!
         @coercer = coercer_class.new(self)
