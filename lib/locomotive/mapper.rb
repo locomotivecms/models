@@ -18,7 +18,7 @@ module Locomotive
 
       instance_eval(&blk) if block_given?
 
-      registry!
+      registry! # TODO add protection for not overrride instance vairable 
     end
 
     def registry!
@@ -37,10 +37,5 @@ module Locomotive
       end
     end
 
-    def load!
-      @collections.each_value { |collection| collection.load! }
-      self
-    end
   end
-
 end

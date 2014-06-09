@@ -1,26 +1,31 @@
 require 'spec_helper'
 
 module Locomotive
+
   describe Mapping::Collection do
     let(:mapper) { double }
 
-    subject do
-      collecion = Mapping::Collection.new(mapper, :site, Mapping::Coercer) do
-        entity Entities::Site
+    module Example
+      class Foo
+        include Locomotive::Entity
       end
-      collecion.load!
-      collecion
+    end
+
+    subject do
+      Mapping::Collection.new(mapper, :site, Mapping::Coercer) do
+        entity Example::Foo
+      end
     end
 
     describe '#deserialize' do
       let(:records) { [{name: 'foo'}] }
 
       specify do
-        expect(subject.deserialize(records, :en).size).to eq(1)
+        expect(subject.deserialize(records).size).to eq(1)
       end
 
       specify do
-        expect(subject.deserialize(records, :en).first).to be_instance_of(Entities::Site)
+        expect(subject.deserialize(records).first).to be_instance_of(Example::Foo)
       end
     end
   end

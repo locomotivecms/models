@@ -45,7 +45,7 @@ module Locomotive
           records.values
         end
 
-        def find id, locale
+        def find id
           records.fetch(id) do
             raise Locomotive::Repository::RecordNotFound, "could not find #{name} with #{identity} = #{id}"
           end

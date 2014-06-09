@@ -12,8 +12,7 @@ RSpec.shared_context 'memory' do
   end
 
   let!(:mapper) do
-    mapper = Locomotive::Mapper.load_from_file! adapter, mapper_file
-    mapper.load!
+    Locomotive::Mapper.load_from_file! adapter, mapper_file
   end
 
   let(:articles_repository) do
@@ -29,12 +28,12 @@ RSpec.shared_context 'memory' do
   end
 
   let(:records) do
-    [{ title: 'new article', content: 'nothing has changed' }]
+    [{ title: { en: 'new article' }, content: 'nothing has changed' }]
   end
 
   def fill_articles!
     records.each do |record|
-      articles_repository.create(Locomotive::Example::Article.new(record), :en)
+      articles_repository.create(Locomotive::Example::Article.new(record))
     end
   end
 end

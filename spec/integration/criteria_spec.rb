@@ -7,33 +7,60 @@ describe 'query' do
 
     let(:entity)  { Example::Article.new(record) }
     let(:records) do
-      [ { title: { en: 'Article 1'}, content: 'content 1' },
-        { title: { en: 'Article 2'}, content: 'content 2' } ]
+      [ { title: { en: 'Screen 1', fr: 'Ecran 1' }, content: 'content 1' },
+        { title: { en: 'Screen 2', fr: 'Ecran 2' }, content: 'content 2' } ]
     end
-    let(:locale)  { :en }
 
     before do fill_articles! end
 
     specify do
-      expect(articles_repository.all(locale).size).to eq(2)
+      expect(articles_repository.all.size).to eq(2)
     end
 
-    specify('can be chained') do
-      expect(
-        articles_repository.query(locale) do
-          where('content.eq' => 'content 1').
-          where('id.lt' => 2)
-        end.first.title
-      ).to eq('Article 1')
+    context 'en' do
+      let(:locale)  { :en }
+
+      specify('can be chained') do
+        expect(
+          title = articles_repository.query(locale) do
+            where('content.eq' => 'content 1').
+            where('id.lt' => 2)
+          end.first.title.to_s
+        ).to eq('Screen 1')
+      end
+
+      specify('i18n field') do
+        expect(
+          articles_repository.query(locale) do
+            where('title.eq' => 'Screen 2')
+            where('id.gt' => 1)
+          end.first.title.to_s
+        ).to eq('Screen 2')
+      end
+
     end
 
-    specify('i18n field') do
-      expect(
-        articles_repository.query(locale) do
-          where('title.eq' => 'Article 2').
-          where('id.gt' => 1)
-        end.first.title
-      ).to eq('Article 2')
+    context 'fr' do
+      let(:locale)  { :fr }
+
+      specify('can be chained') do
+        expect(
+          title = articles_repository.query(locale) do
+            where('content.eq' => 'content 1').
+            where('id.lt' => 2)
+          end.first.title.fr
+        ).to eq('Ecran 1')
+      end
+
+      specify('i18n field') do
+        expect(
+          articles_repository.query(locale) do
+            where('title.eq' => 'Ecran 2')
+            where('id.gt' => 1)
+          end.first.title.fr
+        ).to eq('Ecran 2')
+      end
+
     end
   end
 end

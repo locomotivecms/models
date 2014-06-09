@@ -3,7 +3,6 @@
 require 'pry'
 
 adapter = Locomotive::Adapters::MemoryAdapter
-locale = :en
 
 class Article
   include Locomotive::Entity
@@ -30,12 +29,6 @@ end
 
 class CommentsRepository
   include Locomotive::Repository
-
-  def where(locale, constraints, values)
-    query(locale) do
-      where(constraints => values)
-    end
-  end
 end
 
 mapper = Locomotive::Mapper.new(adapter) do
@@ -43,7 +36,7 @@ mapper = Locomotive::Mapper.new(adapter) do
     entity Article
     repository ArticlesRepository
 
-    attribute :title
+    attribute :title, localized: true
     attribute :author, association: :authors
     attribute :comments, association: :comments
   end
@@ -62,15 +55,16 @@ mapper = Locomotive::Mapper.new(adapter) do
     attribute :title
   end
 
-end.load!
+end
 
 articles_repository = Locomotive::Models[:articles]
 
 author  = Author.new(name: 'John')
 comment = Comment.new(title: 'New Comment')
-article = Article.new(title: "Title #{rand(100_000)}", author: author, comments: [comment])
-articles_repository.create article, locale
+article = Article.new(title: { en: "Title #{rand(100_000)}" }, author: author, comments: [comment])
 
-my_article = articles_repository.find author.id, locale
+articles_repository.create article
+
+my_article = articles_repository.find author.id
 my_article.author
 my_article.comments

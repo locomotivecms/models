@@ -1,6 +1,7 @@
 # irb -r locomotive/models -I ./lib
 
 require 'pry'
+require_relative 'lib/locomotive/adapters/memory_adapter'
 
 adapter = Locomotive::Adapters::MemoryAdapter
 locale = :en
@@ -30,12 +31,6 @@ end
 
 class CommentsRepository
   include Locomotive::Repository
-
-  def where(locale, constraints, values)
-    query(locale) do
-      where(constraints => values)
-    end
-  end
 end
 
 mapper = Locomotive::Mapper.new(adapter) do
@@ -43,7 +38,7 @@ mapper = Locomotive::Mapper.new(adapter) do
     entity Article
     repository ArticlesRepository
 
-    attribute :title
+    attribute :title, localized: true
     attribute :author, association: :authors
     attribute :comments, association: :comments
   end
@@ -62,21 +57,20 @@ mapper = Locomotive::Mapper.new(adapter) do
     attribute :title
   end
 
-end.load!
+end
 
-authors_repository  = Locomotive::Models[:authors]
 articles_repository = Locomotive::Models[:articles]
 comments_repository = Locomotive::Models[:comments]
 
 author  = Author.new(name: 'John')
-authors_repository.create author, locale
+authors_repository.create author
 
 comment = Comment.new(title: 'New Comment')
-comments_repository.create comment, locale
+comments_repository.create comment
 
-article = Article.new(title: "Title #{rand(100_000)}", author: author, comments: [comment])
-articles_repository.create article, locale
+article = Article.new(title: {en:"Title #{rand(100_000)}"}, author: author, comments: [comment])
+articles_repository.create article
 
-my_article = articles_repository.find author.id, locale
+my_article = articles_repository.find my_article.id
 my_article.author
 my_article.comments
