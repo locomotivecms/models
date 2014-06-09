@@ -21,11 +21,11 @@ module Locomotive
       let(:records) { [{name: 'foo'}] }
 
       specify do
-        expect(subject.deserialize(records, :en).size).to eq(1)
+        expect(subject.deserialize(records).size).to eq(1)
       end
 
       specify do
-        expect(subject.deserialize(records, :en).first).to be_instance_of(Example::Foo)
+        expect(subject.deserialize(records).first).to be_instance_of(Example::Foo)
       end
     end
   end

@@ -1,14 +1,21 @@
 module Locomotive
   module Entity
 
-    attr_accessor :id
-    
+    attr_accessor :id, :locale
+
     def self.included(base)
       base.extend ClassMethods
     end
 
     def initialize attributes = {}
-      attributes.each { |k, v| self.send "#{k}=", v }
+      attributes.each do |key, value|
+        case value
+        when Hash
+          self.send "#{key}=", Locomotive::Fields::I18nField.new(value)
+        else
+          self.send "#{key}=", value
+        end
+      end
     end
 
     module ClassMethods

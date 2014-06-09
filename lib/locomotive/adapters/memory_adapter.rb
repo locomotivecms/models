@@ -13,16 +13,16 @@ module Locomotive
         @datasets = Hash.new { |hash, name| hash[name] = Memory::Dataset.new(name) }
       end
 
-      def all(collection, locale)
-        _mapped_collection(collection).deserialize(dataset(collection).all, locale)
+      def all(collection)
+        _mapped_collection(collection).deserialize(dataset(collection).all)
       end
 
-      def create(collection, entity, locale)
-        Memory::Command.new(dataset(collection), _mapped_collection(collection)).create(entity, locale)
+      def create(collection, entity)
+        Memory::Command.new(dataset(collection), _mapped_collection(collection)).create(entity)
       end
 
-      def update(collection, entity, locale)
-        Memory::Command.new(dataset(collection), _mapped_collection(collection)).update(entity, locale)
+      def update(collection, entity)
+        Memory::Command.new(dataset(collection), _mapped_collection(collection)).update(entity)
       end
 
       def destroy(collection, entity)
@@ -45,15 +45,15 @@ module Locomotive
         dataset(collection).size
       end
 
-      def query(locale, collection, &block)
+      def query(collection, locale=nil, &block)
         _mapped_collection(collection).deserialize(
-          Memory::Query.new(dataset(collection), locale, &block),
-        locale)
+          Memory::Query.new(dataset(collection), locale, &block)
+        )
       end
 
-      def find(collection, id, locale)
-        record = dataset(collection).find(id, locale)
-        _mapped_collection(collection).deserialize([record], locale).first
+      def find(collection, id)
+        record = dataset(collection).find(id)
+        _mapped_collection(collection).deserialize([record]).first
       end
 
 

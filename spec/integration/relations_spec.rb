@@ -7,7 +7,7 @@ module Locomotive
     include_context 'memory'
 
     let(:article) do
-      Example::Article.new(title: 'My title', content: 'The article content',
+      Example::Article.new(title: {en:'My title'}, content: 'The article content',
         author: author, comments: [comment])
     end
     let(:author)  { Example::Author.new(name: 'John') }
@@ -19,18 +19,18 @@ module Locomotive
 
       describe 'Saving and retreiving' do
         before do
-          comments_repository.create comment, locale
-          authors_repository.create author, locale
-          articles_repository.create article, locale
+          comments_repository.create comment
+          authors_repository.create author
+          articles_repository.create article
         end
 
         it 'allows to retreive associated record id' do
-          article_double = articles_repository.find(article.id, :en)
+          article_double = articles_repository.find(article.id)
           article_double.author.id.should eql author.id
         end
 
         it 'Lazily loads the associated record' do
-          article_double = articles_repository.find(article.id, :en)
+          article_double = articles_repository.find(article.id)
           article_double.author.name.should eq 'John'
           article_double.author.should be_kind_of Example::Author
           article_double.comments.first.should be_kind_of Example::Comment
@@ -42,13 +42,13 @@ module Locomotive
 
         context 'one to many' do
           let(:article) do
-            Example::Article.new(title: 'My title', content: 'The article content', comments: [comment])
+            Example::Article.new(title: {en:'My title'}, content: 'The article content', comments: [comment])
           end
 
-          before do articles_repository.create article, locale end
+          before do articles_repository.create article end
 
           it 'Lazily loads the associated record' do
-            article_double = articles_repository.find(article.id, :en)
+            article_double = articles_repository.find(article.id)
             article_double.comments.first.should be_kind_of Example::Comment
             article_double.comments.first.title.should eq 'awesome'
           end
@@ -56,12 +56,12 @@ module Locomotive
 
         context 'belongs to' do
           let(:article) do
-            Example::Article.new(title: 'My title', content: 'The article content', author: author)
+            Example::Article.new(title: {en:'My title'}, content: 'The article content', author: author)
           end
-          before do articles_repository.create article, locale end
+          before do articles_repository.create article end
 
           it 'Lazily loads the associated record' do
-            article_double = articles_repository.find(article.id, :en)
+            article_double = articles_repository.find(article.id)
             article_double.author.name.should eq 'John'
             article_double.author.should be_kind_of Example::Author
           end

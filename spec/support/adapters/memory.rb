@@ -28,12 +28,12 @@ RSpec.shared_context 'memory' do
   end
 
   let(:records) do
-    [{ title: 'new article', content: 'nothing has changed' }]
+    [{ title: { en: 'new article' }, content: 'nothing has changed' }]
   end
 
   def fill_articles!
     records.each do |record|
-      articles_repository.create(Locomotive::Example::Article.new(record), :en)
+      articles_repository.create(Locomotive::Example::Article.new(record))
     end
   end
 end

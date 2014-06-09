@@ -10,7 +10,7 @@ collection :articles do
   entity Locomotive::Example::Article
   repository Locomotive::Example::ArticlesRepository
 
-  attribute :title,    klass: String, localized: true
+  attribute :title, localized: true
   attribute :content,  klass: String
 
   attribute :author,   association: :authors

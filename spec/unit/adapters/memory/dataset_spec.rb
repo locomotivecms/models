@@ -43,7 +43,7 @@ describe Locomotive::Adapters::Memory::Dataset do
 
   describe '#find' do
     specify do
-      expect(subject.find(john[:id], :en)).to eq(john.to_hash)
+      expect(subject.find(john[:id])).to eq(john.to_hash)
     end
   end
 
@@ -53,7 +53,7 @@ describe Locomotive::Adapters::Memory::Dataset do
     end
 
     specify do
-      expect(subject.find(jane[:id], :en).fetch(:lastname)).to eq('birkin')
+      expect(subject.find(jane[:id]).fetch(:lastname)).to eq('birkin')
     end
   end
 

@@ -50,7 +50,7 @@ module Locomotive
         def entry_value(entry)
           case (value = entry.send(@field))
           when Hash
-            value.fetch(@locale.to_s)
+            value.fetch(@locale.to_s) # I18n need locale, no fallback here
           else
             value
           end
@@ -58,7 +58,7 @@ module Locomotive
 
         def decode_operator_and_field!
           if match = @operator_and_field.match(/^(?<field>[a-z0-9_-]+)\.(?<operator>.*)$/)
-            @field     = match[:field].to_sym
+            @field    = match[:field].to_sym
             @operator = match[:operator].to_sym
             check_operator!
           end

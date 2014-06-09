@@ -47,13 +47,13 @@ module Locomotive
         @attributes[name] = options
       end
 
-      def serialize(entity, locale)
-        @coercer.to_record(entity, locale)
+      def serialize(entity)
+        @coercer.to_record(entity)
       end
 
-      def deserialize(records, locale)
+      def deserialize(records)
         records.map do |record|
-          @coercer.from_record(record, locale)
+          @coercer.from_record(record)
         end
       end
 

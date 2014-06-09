@@ -18,7 +18,7 @@ module Locomotive
 
       instance_eval(&blk) if block_given?
 
-      registry!
+      registry! # TODO add protection for not overrride instance vairable 
     end
 
     def registry!

@@ -14,7 +14,7 @@ module Locomotive
         alias :length :size
         alias :count :size
 
-        def initialize(dataset, locale, &block)
+        def initialize(dataset, locale=nil, &block)
           @dataset    = dataset
           @conditions = []
           @sorting = nil

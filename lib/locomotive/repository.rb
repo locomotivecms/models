@@ -10,28 +10,34 @@ module Locomotive
       @adapter = mapper.adapter
     end
 
-    def all(locale)
-      @adapter.all(collection, locale)
+    def all
+      @adapter.all(collection)
     end
 
-    def find(id, locale)
-      @adapter.find(collection, id, locale)
+    def find(id)
+      @adapter.find(collection, id)
     end
 
-    def query(locale, &block)
-      @adapter.query(locale, collection, &block)
+    def query(locale=nil, &block)
+      @adapter.query(collection, locale, &block)
     end
 
-    def create(entity, locale)
-      entity.id = @adapter.create(collection, entity, locale)
+    # def where(constraints, values)
+    #   @adapter.query do
+    #     where(constraints => values)
+    #   end
+    # end
+
+    def create(entity)
+      entity.id = @adapter.create(collection, entity)
     end
 
     def persisted?(entity)
       !!entity.id && @adapter.persisted?(collection, entity)
     end
 
-    def update(entity, locale)
-      @adapter.update(collection, entity, locale)
+    def update(entity)
+      @adapter.update(collection, entity)
     end
 
     def destroy(entity)

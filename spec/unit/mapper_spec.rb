@@ -49,10 +49,10 @@ module Locomotive
           Models.mapper.collection(:dummies).repository
         end
         before do
-          repository.create dummy_entity, :en
+          repository.create dummy_entity
         end
         specify do
-          expect(repository.find(dummy_entity.id, :en).foo).to eq('bar')
+          expect(repository.find(dummy_entity.id).foo).to eq('bar')
         end
       end
     end
