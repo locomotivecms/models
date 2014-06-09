@@ -1,6 +1,8 @@
 require_relative 'mapping/collection'
 require_relative 'mapping/coercer'
 require_relative 'mapping/virtual_proxy'
+require_relative 'mapping/referencer'
+require_relative 'mapping/dereferencer'
 
 module Locomotive
   module Mapping

@@ -30,6 +30,5 @@ collection :comments do
 
   attribute :title
   attribute :content
-  attribute :article, association: :articles
-  # attribute :author,  association: :authors
+  attribute :article_id
 end
