@@ -3,6 +3,8 @@ module Locomotive
     class I18nField
 
       class UnsupportedFormat < StandardError ; end
+      class NoLocaleError < StandardError ; end
+      class EmptyLocaleError < StandardError ; end
 
       class I18nValues < Hash
         def method_missing method_name, *args
@@ -12,8 +14,10 @@ module Locomotive
       end
 
       attr_accessor :i18n_values
-      # alias :values= :i18n_values=
-      alias :values  :i18n_values
+
+      def values
+        i18n_values.values
+      end
 
       def initialize i18n_values = nil
         @i18n_values = I18nValues.new
@@ -37,9 +41,13 @@ module Locomotive
 
       def to_s locale = nil
         if locale
-          i18n_values.fetch(locale)
+          i18n_values.fetch(locale) do
+            raise NoLocaleError
+          end.tap do |value|
+            raise EmptyLocaleError if value.empty?
+          end
         else
-          "#<Foo: @i18n_values=>{" + i18n_values.map{|k,v|":#{k}=>#{v}"}.join(',') + '}>'
+          "#<I18nField: @i18n_values=>{" + i18n_values.map{|k,v|":#{k}=>#{v}"}.join(',') + '}>'
         end
       end
       alias_method :inspect, :to_s
