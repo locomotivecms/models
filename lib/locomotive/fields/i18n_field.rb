@@ -15,9 +15,8 @@ module Locomotive
       # alias :values= :i18n_values=
       alias :values  :i18n_values
 
-      def initialize i18n_values = nil, _current_locale = nil
+      def initialize i18n_values = nil
         @i18n_values = I18nValues.new
-        self.current_locale = _current_locale
         self << i18n_values
       end
 
@@ -36,17 +35,9 @@ module Locomotive
         @i18n_values.keys
       end
 
-      def current_locale= locale
-        @current_locale = locale.try(:to_sym)
-      end
-
-      def current_locale
-        @current_locale ||= i18n_values.keys.first
-      end
-
       def to_s locale = nil
-        if (str = i18n_values.fetch(locale) { i18n_values[current_locale] })
-          str
+        if locale
+          i18n_values.fetch(locale)
         else
           "#<Foo: @i18n_values=>{" + i18n_values.map{|k,v|":#{k}=>#{v}"}.join(',') + '}>'
         end

@@ -52,9 +52,8 @@ describe Locomotive::Decorators::I18nDecorator do
     context 'when field is an i18n field' do
       let(:name) { { en: 'blah', fr: 'bla' } }
       context 'no current locale' do
-        # TODO redundant test here ( @see fields/i18n_field_spec.rb )
-        it 'falls back to default locale' do
-          subject.should eql 'blah'
+        it 'displays object for inspection' do
+          subject.should eql '#<Foo: @i18n_values=>{:en=>blah,:fr=>bla}>'
         end
       end
 
@@ -81,13 +80,25 @@ describe Locomotive::Decorators::I18nDecorator do
       let(:decorated_set) do
         Locomotive::Decorators::I18nDecorator.decorate(entities)
       end
-      it { should eq 'blah' }
+      it 'displays object for inspection' do
+        subject.should eq '#<Foo: @i18n_values=>{:en=>blah,:fr=>bla}>'
+      end
     end
-    context 'when locale is set in a given block' do
+
+    context 'when locale is passed in the constructor' do
       let(:decorated_set) do
         Locomotive::Decorators::I18nDecorator.decorate(entities, :fr)
       end
       it { should eq 'bla' }
+    end
+
+    context 'when passed locale does not exist' do
+      let(:decorated_set) do
+        Locomotive::Decorators::I18nDecorator.decorate(entities, :wk)
+      end
+      it 'raises an error' do
+        expect { subject }.to raise_error
+      end
     end
   end
 end
