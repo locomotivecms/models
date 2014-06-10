@@ -14,6 +14,8 @@ module Locomotive
         alias :length :size
         alias :count :size
 
+        attr_reader :conditions
+
         def initialize(dataset, locale=nil, &block)
           @dataset    = dataset
           @conditions = []
@@ -26,6 +28,11 @@ module Locomotive
 
         def where(conditions = {})
           @conditions += conditions.map { |name, value| Condition.new(name, value, @locale) }
+          self
+        end
+
+        def +(query)
+          @conditions += query.conditions
           self
         end
 

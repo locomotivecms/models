@@ -7,6 +7,7 @@ module Locomotive
     attr_reader :mapper
 
     def initialize(mapper)
+      @mapper  = mapper
       @adapter = mapper.adapter
     end
 
@@ -22,11 +23,10 @@ module Locomotive
       @adapter.query(collection, locale, &block)
     end
 
-    # def where(constraints, values)
-    #   @adapter.query do
-    #     where(constraints => values)
-    #   end
-    # end
+    def load_association! object, relation, request
+      mapper.load_association! object, relation, request
+      nil
+    end
 
     def create(entity)
       entity.id = @adapter.create(collection, entity)

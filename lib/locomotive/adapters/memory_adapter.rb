@@ -2,6 +2,7 @@ require_relative 'memory/dataset'
 require_relative 'memory/condition'
 require_relative 'memory/query'
 require_relative 'memory/command'
+require_relative 'memory/wrapper'
 
 module Locomotive
   module Adapters
@@ -46,9 +47,8 @@ module Locomotive
       end
 
       def query(collection, locale=nil, &block)
-        _mapped_collection(collection).deserialize(
-          Memory::Query.new(dataset(collection), locale, &block)
-        )
+        query = Memory::Query.new(dataset(collection), locale, &block)
+        Memory::Wrapper.new query, _mapped_collection(collection)
       end
 
       def find(collection, id)

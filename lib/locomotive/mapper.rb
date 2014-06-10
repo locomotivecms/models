@@ -18,7 +18,13 @@ module Locomotive
 
       instance_eval(&blk) if block_given?
 
-      registry! # TODO add protection for not overrride instance vairable 
+      registry! # TODO add protection for not overrride instance vairable
+    end
+
+    def load_association! object, relation, request
+      object.send(:"#{relation}=", Locomotive::Mapping::VirtualProxy.new do
+        object.send(:"#{relation}=", request)
+      end)
     end
 
     def registry!
