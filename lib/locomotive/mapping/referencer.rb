@@ -17,14 +17,22 @@ module Locomotive
 
       private
 
+      def assign_parent_reference! entity
+        binding.pry unless attributes[:id]
+        raise "Please persit parent object first" unless attributes[:id]
+        entity.instance_variable_set("@#{reference_field}", attributes[:id])
+        # entity.instance_variable_set('@foreign_id', attributes[:id])
+        # entity.define_singleton_method(reference_field.to_sym) do
+        #   @foreign_id
+        # end
+      end
+
       def persist! entity
-        unless persisted? entity
-          raise "Please persit parent object first" unless attributes[:id]
-          entity.instance_variable_set("@#{reference_field}", attributes[:id])
-          # entity.instance_variable_set('@foreign_id', attributes[:id])
-          # entity.define_singleton_method(reference_field.to_sym) do
-          #   @foreign_id
-          # end
+        assign_parent_reference! entity
+
+        if persisted? entity
+          Locomotive::Models[options[:association]].update entity
+        else
           Locomotive::Models[options[:association]].create entity
         end
       end

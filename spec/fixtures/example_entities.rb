@@ -7,7 +7,7 @@ module Locomotive
 
     class Author
       include Locomotive::Entity
-      attributes :name
+      attributes :name, :articles
     end
 
     class Comment

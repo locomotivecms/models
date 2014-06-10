@@ -20,7 +20,7 @@ module Locomotive
       def entity_reference value
         Models[options[:association]].query do
           where('id.eq' => value)
-        end.first
+        end
       end
 
       def entities_reference value
