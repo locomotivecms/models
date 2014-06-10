@@ -2,7 +2,7 @@ module Locomotive
   module Example
     class Article
       include Locomotive::Entity
-      attributes :title, :content, :author, :comments
+      attributes :title, :content, :author_id, :comments
     end
 
     class Author

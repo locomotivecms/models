@@ -46,12 +46,12 @@ module Locomotive
           articles_repository.create article
         end
 
-        it 'allows to retreive associated record id' do
+        it 'allows to retreive associated record id', pending: true do
           article_double = articles_repository.find(article.id)
           article_double.author.id.should eql author.id
         end
 
-        it 'Lazily loads the associated record' do
+        it 'Lazily loads the associated record', pending: true do
           article_double = articles_repository.find(article.id)
           article_double.author.name.should eq 'John'
           article_double.author.should be_kind_of Example::Author
