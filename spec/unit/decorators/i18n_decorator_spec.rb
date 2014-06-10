@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'locomotive/models/decorators'
 
-describe Locomotive::Decorators::I18nDecorator, focused: true do
+describe Locomotive::Decorators::I18nDecorator do
 
   class FakeEntity
     include Locomotive::Entity
@@ -60,6 +60,11 @@ describe Locomotive::Decorators::I18nDecorator, focused: true do
 
       context 'with current locale' do
         before { decorator.current_locale = :fr }
+        it { should eql 'bla' }
+      end
+
+      context 'passing current locale in constructor' do
+        let(:decorator) { Locomotive::Decorators::I18nDecorator.new(entity, :fr) }
         it { should eql 'bla' }
       end
     end

@@ -9,6 +9,11 @@ module Locomotive
         end
       end
 
+      def initialize(object, locale = nil)
+        self.current_locale = locale
+        super(object)
+      end
+
       def method_missing(name, *args, &block)
         begin
           __getobj__.public_send(name)[current_locale]
