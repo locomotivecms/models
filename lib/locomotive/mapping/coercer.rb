@@ -48,6 +48,8 @@ module Locomotive
         case content
         when Fields::I18nField
           content.i18n_values
+        when nil
+          {}
         else
           raise Fields::I18nField::UnsupportedFormat
             .new('Localized field needs Fields::I18nField, please use << instead of =')
