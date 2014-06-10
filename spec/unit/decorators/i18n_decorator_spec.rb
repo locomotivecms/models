@@ -40,7 +40,7 @@ describe Locomotive::Decorators::I18nDecorator do
 
   describe 'fields on single instance' do
 
-    subject { decorator.name.to_s }
+    subject { decorator.name }
     let(:decorator) { Locomotive::Decorators::I18nDecorator.new(entity) }
     let(:entity) { FakeEntity.new(name: name) }
 
@@ -53,7 +53,7 @@ describe Locomotive::Decorators::I18nDecorator do
       let(:name) { { en: 'blah', fr: 'bla' } }
       context 'no current locale' do
         it 'displays object for inspection' do
-          subject.should eql '#<Foo: @i18n_values=>{:en=>blah,:fr=>bla}>'
+          subject.should eql '#<I18nField: @i18n_values=>{:en=>blah,:fr=>bla}>'
         end
       end
 
@@ -70,18 +70,18 @@ describe Locomotive::Decorators::I18nDecorator do
   end
 
   describe 'fields on resultset' do
-    subject { decorated_set.first.name.to_s }
+    subject { decorated_set.first.name }
     let(:entities) {
-      [ FakeEntity.new(name: { en: 'blah', fr: 'bla'}),
+      [ FakeEntity.new(name: { en: 'blah', es: '', fr: 'bla'}),
         FakeEntity.new
       ]
     }
-    context 'when no block is given' do
+    context 'when no locale is passed in constructor' do
       let(:decorated_set) do
         Locomotive::Decorators::I18nDecorator.decorate(entities)
       end
       it 'displays object for inspection' do
-        subject.should eq '#<Foo: @i18n_values=>{:en=>blah,:fr=>bla}>'
+        subject.should eq '#<I18nField: @i18n_values=>{:en=>blah,:es=>,:fr=>bla}>'
       end
     end
 
@@ -91,14 +91,43 @@ describe Locomotive::Decorators::I18nDecorator do
       end
       it { should eq 'bla' }
     end
+  end
+
+  context 'Fallbacks' do
+    subject { decorator.name }
+    let(:decorator) { Locomotive::Decorators::I18nDecorator.new(entity, locale) }
+    let(:entity) { FakeEntity.new(name: name) }
+    let(:name) { { en: 'blah', fr: 'bla', es: '' } }
 
     context 'when passed locale does not exist' do
-      let(:decorated_set) do
-        Locomotive::Decorators::I18nDecorator.decorate(entities, :wk)
+      let(:locale) { :wk }
+      context 'default fallback' do
+        it { should be_nil }
       end
-      it 'raises an error' do
-        expect { subject }.to raise_error
+      context 'custom fallback' do
+        before do
+          decorator.on_no_locale = Proc.new { |field, locale| "Translation #{locale} is not supported" }
+        end
+        it { should eq 'Translation wk is not supported' }
       end
     end
+
+    context 'when entity has empty locale value' do
+      let(:locale) { :es }
+
+      context 'default fallback' do
+        it 'returns the first locale in the field' do
+          subject.should eq 'blah'
+        end
+      end
+
+      context 'custom fallback' do
+        before do
+          decorator.on_empty_locale = Proc.new { |field, locale| "#{field[:en]} [untranslated #{locale}]" }
+        end
+        it { should eq 'blah [untranslated es]' }
+      end
+    end
+
   end
 end
