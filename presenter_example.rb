@@ -25,9 +25,7 @@ end
 
 articles_repository = Locomotive::Models[:articles]
 
-title = Locomotive::Fields::I18nField.new({ en: "Title #{rand(100_000)}" })
-
-article = Article.new(title: title)
+article = Article.new(title: { en: "Title #{rand(100_000)}" })
 articles_repository.create article
 
 my_article = articles_repository.find article.id
@@ -39,7 +37,13 @@ articles_repository.update my_article
 my_1_article = articles_repository.find my_article.id
 my_1_article.title
 
+my_1_article.title
+# => "Title 97960"
 my_1_article.title.en
 # => "Title 97960"
+my_1_article.title[:en]
+# => "Title 97960"
 my_1_article.title.fr
+# => "Titre 35579"
+my_1_article.title[:fr]
 # => "Titre 35579"

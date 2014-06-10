@@ -13,23 +13,7 @@ module Locomotive
             if options[:localized]
               _attributes[name] = to_locale(entity.send(name))
             elsif options[:association]
-              case entity.send(name)
-              when Array
-                entity.send(name).each do |associated_entity|
-                  unless associated_entity.id # Non persisted
-                    Locomotive::Models[name].create associated_entity
-                  end
-                end
-                _attributes[name] = entity.send(name).map(&:id)
-              else
-                associated_entity = entity.send(name)
-                if associated_entity
-                  unless associated_entity.id # Non persisted
-                    Locomotive::Models[options[:association]].create associated_entity
-                  end
-                  _attributes[name] = associated_entity.id
-                end
-              end
+              Referencer.new(@collection, _attributes, name, options, entity.send(name)).reference!
             else
               _attributes[name] = entity.send(name)
             end
@@ -43,26 +27,7 @@ module Locomotive
             value = if options[:localized]
               Fields::I18nField.new(record[name])
             elsif options[:association]
-              case record[name]
-              when Array
-                _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
-                    _entity.send(:"#{name}=", begin
-                      Models[options[:association]].query do
-                        where('id.in' => record[name])
-                      end
-                    end)
-                  }
-                )
-              else
-                if record[name]
-                  _entity.send(:"#{name}=", Locomotive::Mapping::VirtualProxy.new {
-                      _entity.send(:"#{name}=",
-                        Models[options[:association]].find(record[name])
-                      )
-                    }
-                  )
-                end
-              end
+              Dereferencer.new(_entity, name, options, record[name]).deference!
             else
               record[name]
             end

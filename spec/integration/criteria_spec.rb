@@ -45,7 +45,7 @@ describe 'query' do
 
       specify('can be chained') do
         expect(
-          title = articles_repository.query(locale) do
+          articles_repository.query(locale) do
             where('content.eq' => 'content 1').
             where('id.lt' => 2)
           end.first.title.fr
@@ -56,6 +56,7 @@ describe 'query' do
         expect(
           articles_repository.query(locale) do
             where('title.eq' => 'Ecran 2')
+            where('content.matches' => /content/)
             where('id.gt' => 1)
           end.first.title.fr
         ).to eq('Ecran 2')

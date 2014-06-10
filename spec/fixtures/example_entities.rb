@@ -12,7 +12,7 @@ module Locomotive
 
     class Comment
       include Locomotive::Entity
-      attributes :title, :content, :article
+      attributes :title, :content, :article_id
     end
 
     class Product
