@@ -1,7 +1,7 @@
 module Locomotive
   module Entity
 
-    attr_accessor :id, :locale
+    attr_accessor :id
 
     def self.included(base)
       base.extend ClassMethods

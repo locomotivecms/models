@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Locomotive::Entity do
-  
+
   class FakeEntity
     include Locomotive::Entity
     attributes :name, :description
@@ -11,7 +11,7 @@ describe Locomotive::Entity do
     subject { FakeEntity.new }
     it { should be_a FakeEntity }
     it { should respond_to :name }
-    it { should respond_to :name= }    
+    it { should respond_to :name= }
   end
 
   context 'with empty hash' do
@@ -24,6 +24,7 @@ describe Locomotive::Entity do
     subject { FakeEntity.new({name: 'John'}) }
     it { should be_a FakeEntity }
     its(:name) { should eq 'John' }
-    its(:description) { should be_nil }    
+    its(:description) { should be_nil }
   end
+
 end
