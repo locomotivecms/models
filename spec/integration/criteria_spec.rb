@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'query' do
   include_context 'memory'
 
-  context 'with record' do
+  context 'with record', pending: true do
 
     let(:entity)  { Example::Article.new(record) }
     let(:records) do

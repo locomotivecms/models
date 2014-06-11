@@ -5,7 +5,7 @@ module Locomotive
       def reference!
         return unless value
 
-        Array(value).each do |entity| persist! entity end
+        Array(value).each do |entity| fill_associations! entity end
 
         case value
         when Array
@@ -18,27 +18,43 @@ module Locomotive
       private
 
       def assign_parent_reference! entity
-        binding.pry unless attributes[:id]
         raise "Please persit parent object first" unless attributes[:id]
-        entity.instance_variable_set("@#{reference_field}", attributes[:id])
-        # entity.instance_variable_set('@foreign_id', attributes[:id])
-        # entity.define_singleton_method(reference_field.to_sym) do
-        #   @foreign_id
-        # end
+
+        identity_reference_field = options[:association].fetch(:key) # article_id
+        entity.send :"#{identity_reference_field}=", attributes[:id]
       end
 
-      def persist! entity
-        assign_parent_reference! entity
+      def assign_child_reference! entity
+        identity_reference_field = options[:association].fetch(:key)
+        attributes[identity_reference_field] = identity(entity)
+      end
 
-        if persisted? entity
-          Locomotive::Models[options[:association]].update entity
-        else
-          Locomotive::Models[options[:association]].create entity
+      def fill_associations! entity
+        type = options[:association].fetch(:type)
+
+        if type == :has_many
+          assign_parent_reference! entity
+          if persisted? entity
+            Locomotive::Models[options[:association].fetch(:name)].update entity # save reference
+          else
+            Locomotive::Models[options[:association].fetch(:name)].create entity # save reference
+          end
+        else # belongs_to
+          assign_child_reference! entity
         end
+      end
+
+      def identity entity
+        persist!(entity) if persisted?(entity)
+        entity.id
       end
 
       def persisted? entity
         entity.id
+      end
+
+      def persist! entity
+        Locomotive::Models[options[:association].fetch(:name)].update entity
       end
 
       def reference_field

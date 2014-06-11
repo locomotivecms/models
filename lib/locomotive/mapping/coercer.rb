@@ -24,25 +24,26 @@ module Locomotive
       def from_record(record)
         @collection.entity.new(id: record[:id]).tap do |_entity|
           @collection.attributes.each do |name, options|
-            value = if options[:localized]
-              Fields::I18nField.new(record[name])
-            elsif options[:association]
-              Dereferencer.new(_entity, name, options, record[name]).deference!
+            if options[:association]
+              Dereferencer.new(_entity, name, options, record).deference!
+            elsif options[:localized]
+              _entity.send(:"#{name}=", Fields::I18nField.new(record[name]))
             else
-              record[name]
-            end
-
-            if (klass = options.fetch(:klass, nil))
-              _entity.send(:"#{name}=", klass.new(value))
-            else
-              _entity.send(:"#{name}=", value)
+              _entity.send(:"#{name}=", cast(record[name], options))
             end
           end
-
         end
       end
 
       protected
+
+      def cast value, options
+        if (klass = options.fetch(:klass, nil))
+          klass.new(value)
+        else
+          value
+        end
+      end
 
       def to_locale(content)
         case content
