@@ -29,4 +29,20 @@ describe Locomotive::Fields::I18nField do
     it { subject.en.should eq 'My value' }
     it { subject[:en].should eq 'My value' }
   end
+
+  describe 'adding values' do
+    subject { Locomotive::Fields::I18nField.new(values) }
+    let(:values) { { en: 'My value' } }
+    before { subject << new_values }
+
+    context 'hash with string keys' do
+      let(:new_values) { {'fr' => 'Valeur'} }
+      it { subject.fr.should eq 'Valeur' }
+    end
+
+    context 'hash with symbol keys' do
+      let(:new_values) { {fr: 'Valeur'} }
+      it { subject.fr.should eq 'Valeur' }
+    end
+  end
 end
