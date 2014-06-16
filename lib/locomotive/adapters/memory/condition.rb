@@ -22,7 +22,6 @@ module Locomotive
           entry_value = entry_value(entry)
 
           adapt_operator!(entry_value)
-
           case @operator
           when :==        then entry_value == @value
           when :eq        then entry_value == @value
@@ -50,7 +49,7 @@ module Locomotive
         def entry_value(entry)
           case (value = entry.send(@field))
           when Hash
-            value.fetch(@locale.to_s) # I18n need locale, no fallback here
+            value.fetch(@locale.to_s) { nil }
           else
             value
           end

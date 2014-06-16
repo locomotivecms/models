@@ -17,6 +17,13 @@ module Locomotive
 
           it { should eq en: 'magic vacuum' , fr: 'aspirateur magique' }
         end
+
+      end
+
+      context 'nil value' do
+        subject { coercer.to_record(entity)[:title] }
+        let(:entity_hash) { { title: nil } }
+        it { should eq({}) }
       end
     end
   end
