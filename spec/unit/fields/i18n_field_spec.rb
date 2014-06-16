@@ -45,4 +45,16 @@ describe Locomotive::Fields::I18nField do
       it { subject.fr.should eq 'Valeur' }
     end
   end
+
+  describe 'iterating over values' do
+    subject { Locomotive::Fields::I18nField.new(values) }
+    let(:values) { { en: 'My value', fr: 'Valeur' } }
+    it 'allow to iterate over strings' do
+      test_val = []
+      subject.each do |locale, value|
+        test_val << subject[locale]
+      end
+      test_val.join.should eq 'My valueValeur'
+    end
+  end
 end
