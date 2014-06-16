@@ -20,9 +20,9 @@ module Locomotive
         begin
           __getobj__.public_send(name).to_s(current_locale)
         rescue Locomotive::Fields::I18nField::NoLocaleError
-          on_no_locale.call __getobj__.send(:name), current_locale
+          on_no_locale.call __getobj__.send(name), current_locale
         rescue Locomotive::Fields::I18nField::EmptyLocaleError
-          on_empty_locale.call __getobj__.send(:name), current_locale
+          on_empty_locale.call __getobj__.send(name), current_locale
         rescue ArgumentError
           super
         end

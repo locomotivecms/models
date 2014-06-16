@@ -24,8 +24,8 @@ module Locomotive
         self << i18n_values
       end
 
-      def << i18n_values
-        i18n_values && @i18n_values.merge!(i18n_values)
+      def << _i18n_values
+        i18n_values && @i18n_values.merge!(_i18n_values.symbolize_keys)
 
       rescue TypeError
         raise UnsupportedFormat.new("waiting format: { locale: value } not ''#{i18n_values}''")

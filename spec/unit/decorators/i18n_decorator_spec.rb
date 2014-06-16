@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'locomotive/models/decorators'
+require 'locomotive/decorators'
 
 describe Locomotive::Decorators::I18nDecorator do
 
