@@ -1,6 +1,9 @@
+require 'forwardable'
+
 module Locomotive
   module Fields
     class I18nField
+      extend Forwardable
 
       class UnsupportedFormat < StandardError ; end
       class NoLocaleError < StandardError ; end
@@ -14,14 +17,7 @@ module Locomotive
       end
 
       attr_accessor :i18n_values
-
-      def values
-        i18n_values.values
-      end
-
-      def each(&block)
-        i18n_values.each(&block)
-      end
+      def_delegators :i18n_values, :values, :[], :[]=, :each, :keys
 
       def initialize i18n_values = nil
         @i18n_values = I18nValues.new
@@ -56,12 +52,8 @@ module Locomotive
       end
       alias_method :inspect, :to_s
 
-      def [] (locale)
-        send locale
-      end
-
       def method_missing method_name, *args
-        return i18n_values.send(method_name) if i18n_values.has_key?(method_name)
+        return i18n_values.send(method_name) if i18n_values.respond_to?(method_name)
         super
       end
 
