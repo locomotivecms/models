@@ -19,6 +19,10 @@ module Locomotive
         i18n_values.values
       end
 
+      def each(&block)
+        i18n_values.each(&block)
+      end
+
       def initialize i18n_values = nil
         @i18n_values = I18nValues.new
         self << i18n_values
