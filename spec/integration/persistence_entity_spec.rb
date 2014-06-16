@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Locomotive
 
-  describe '' do
+  describe '', pending: true do
     include_context 'memory'
 
     let(:entity)  { Example::Article.new(record) }
