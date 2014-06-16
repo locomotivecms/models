@@ -49,7 +49,7 @@ module Locomotive
         def entry_value(entry)
           case (value = entry.send(@field))
           when Hash
-            value.fetch(@locale.to_s) { nil } # I18n need locale, no fallback here
+            value.fetch(@locale.to_s) { nil }
           else
             value
           end
