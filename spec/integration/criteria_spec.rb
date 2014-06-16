@@ -22,10 +22,10 @@ describe 'query' do
 
       specify('can be chained') do
         expect(
-          title = articles_repository.query(locale) do
+          articles_repository.query(locale) do
             where('content.eq' => 'content 1').
             where('id.lt' => 2)
-          end.first.title.to_s
+          end.first.title[:en]
         ).to eq('Screen 1')
       end
 
@@ -34,7 +34,7 @@ describe 'query' do
           articles_repository.query(locale) do
             where('title.eq' => 'Screen 2')
             where('id.gt' => 1)
-          end.first.title.to_s
+          end.first.title[:en]
         ).to eq('Screen 2')
       end
 
