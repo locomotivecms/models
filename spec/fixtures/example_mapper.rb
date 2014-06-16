@@ -13,7 +13,7 @@ collection :articles do
   attribute :title, localized: true
   attribute :content,  klass: String
 
-  attribute :author,   association: :authors
+  attribute :author_id
   attribute :comments, association: :comments
 end
 
@@ -22,6 +22,7 @@ collection :authors do
   repository Locomotive::Example::AuthorsRepository
 
   attribute :name
+  attribute :articles, association: :articles
 end
 
 collection :comments do
