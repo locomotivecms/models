@@ -16,6 +16,10 @@ module Locomotive
         super(object)
       end
 
+      def current_locale= _locale
+        @current_locale = _locale.try(:to_sym)
+      end
+
       def method_missing(name, *args, &block)
         begin
           __getobj__.public_send(name).to_s(current_locale)
@@ -23,7 +27,7 @@ module Locomotive
           on_no_locale.call __getobj__.send(name), current_locale
         rescue Locomotive::Fields::I18nField::EmptyLocaleError
           on_empty_locale.call __getobj__.send(name), current_locale
-        rescue ArgumentError
+        rescue ArgumentError, TypeError
           super
         end
       end

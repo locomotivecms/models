@@ -49,6 +49,8 @@ module Locomotive
         case content
         when Fields::I18nField
           content.i18n_values
+        when Hash
+          content
         when nil
           {}
         else
